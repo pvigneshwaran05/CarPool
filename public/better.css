@@ -1,0 +1,38 @@
+.rejection-page {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.rejection-page h1 {
+    font-size: 2rem;
+    color: #ff3e3e;
+}
+
+.rejection-page textarea {
+    width: 80%;
+    height: 100px;
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.rejection-page button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #ff3e3e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.rejection-page button:hover {
+    background-color: #ff5e5e;
+}
+
+.rejection-page a {
+    display: block;
+    margin-top: 20px;
+    color: #333;
+    text-decoration: underline;
+}

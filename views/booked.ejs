@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ride Submitted - Campus Carpool Connect</title>
+    <link rel="stylesheet" href="rideSubmit.css">
+</head>
+<body>
+    <div class="confirmation-page">
+        <!-- Navbar -->
+        <%- include('components/navbar.ejs') %>
+
+        <!-- Confirmation Message -->
+        <section class="confirmation-section">
+            <h1>Your Booking has been Conformed</h1>
+            <p>Contact Number of Car Owner or any queries</p>
+            
+            <!-- Go to Home Page Button -->
+            <div class="home-button-container">
+                <a href="/home" class="home-button">Go to Home Page</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <%- include('components/footer.ejs') %>
+    </div>
+</body>
+</html>

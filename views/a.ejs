@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Rides - Campus Carpool Connect</title>
+    <link rel="stylesheet" href="searchRide.css">
+</head>
+<body>
+    <div class="search-ride-page">
+        
+        <%- include('components/navbar.ejs') %>
+
+        <header class="search-ride-header">
+            <h1>Rides Created and Booked by You</h1>
+            <p>Select a ride to see more details and join.</p>
+        </header>
+
+        <section class="ride-list-section">
+            <!-- Rides Created by User -->
+            <div class="rides-created">
+                <h2>Rides Created by You</h2>
+                <% if (createdRides.length > 0) { %>
+                    <div class="ride-list">
+                        <% createdRides.forEach(function(ride) { %>
+                            <%- include('components/rideTab', { ride: ride }) %>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <p>You have not created any rides.</p>
+                <% } %>
+            </div>
+
+            <!-- Rides Booked by User -->
+            <div class="rides-booked">
+                <h2>Rides Booked by You</h2>
+                <% if (bookedRides.length > 0) { %>
+                    <div class="ride-list">
+                        <% bookedRides.forEach(function(ride) { %>
+                            <%- include('components/rideTab', { ride: ride }) %>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <p>You have not booked any rides.</p>
+                <% } %>
+            </div>
+        </section>
+
+        <%- include('components/footer.ejs') %>
+    </div>
+</body>
+</html>

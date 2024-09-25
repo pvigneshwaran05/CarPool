@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ride Rejection - Campus Carpool Connect</title>
+    <link rel="stylesheet" href="better.css">
+</head>
+<body>
+    <div class="rejection-page">
+        <h1>Reject Booking Request</h1>
+        <p>Please provide a reason for rejecting this booking request:</p>
+
+        <form action="/ride/reject" method="POST">
+            <input type="hidden" name="rideId" value="<%= rideId %>">
+            <input type="hidden" name="rider" value="<%= rider %>">
+            
+            <textarea name="reason" placeholder="Enter the reason for rejection" required></textarea>
+            
+            <button type="submit">Submit Reason</button>
+        </form>
+
+        <a href="/home">Cancel</a>
+
+        <%- include('components/footer.ejs') %>
+
+
+    </div>
+</body>
+</html>

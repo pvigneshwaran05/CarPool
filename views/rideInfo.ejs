@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ride Information - Campus Carpool Connect</title>
+    <link rel="stylesheet" href="rideInfo.css">
+    <style>
+        /* General Styles */
+        .navbar {
+            background-color: #007bff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-size: 1.5em;
+            color: white;
+        }
+
+        .navbar-links a {
+            margin-left: 20px;
+            color: white;
+            font-size: 1em;
+            text-decoration: none;
+        }
+
+        .navbar-links a:hover {
+            text-decoration: underline;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Ride Information Header */
+        .ride-info-section {
+            background-color: #007bff;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 900px;
+        }
+
+        .ride-info-section h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        /* Ride Details Section */
+        .ride-details-section {
+            padding: 40px 20px;
+            background-color: #fff;
+            max-width: 800px;
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Section Titles */
+        h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        /* Info Rows */
+        .ride-info .info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .ride-info .info-row strong {
+            font-weight: bold;
+        }
+
+        /* Driver Details and Ride Details Cards */
+        .driver-details {
+            padding: 20px;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            color: black;
+            text-align: left;
+        }
+
+        .ride-details {
+            padding: 20px;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            color: black;
+            text-align: left;
+        }
+
+        .driver-details p {
+            font-size: 1.2em;
+            margin: 8px 0;
+        }
+
+        .ride-details p {
+            font-size: 1.2em;
+            margin: 8px 0;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+
+        /* Book Button */
+        .book-button {
+            padding: 15px 30px;
+            background-color: white;
+            color: #007bff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .book-button:hover {
+            background-color: wheat;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ride-info-page">
+        <!-- Navbar -->
+        <%- include('components/navbar.ejs') %>
+
+        <!-- Ride Information Section --> 
+        <section class="ride-info-section">
+            <h1>Ride Information</h1>
+            
+            <!-- Driver Details -->
+            <div class="driver-details">
+                <h2>Car Owner Details</h2>
+                <p><strong>Roll Number:</strong> <%= ride.rollno %></p>
+                <p><strong>Name:</strong> <%= ride.name %></p>
+            </div>
+            
+            <!-- Ride Details -->
+            <div class="ride-details">
+                <h2>Ride Details</h2>
+                <p><strong>Final Destination:</strong> <%= ride.destination %></p>
+                <p><strong>Travel Start Time:</strong> <%= ride.startTime %></p>
+                <p><strong>Estimated Travel Time:</strong> <%= ride.duration %></p>
+                <p><strong>Car Name:</strong> <%= ride.carname %></p>
+                <p><strong>Number of Seats Available:</strong> <%= ride.seatnum %></p>
+                <p><strong>Position of Available Seats:</strong> <%= ride.pos %></p>
+                
+                <!-- Dropdown for Seat Position -->
+                <label for="positionSelect">Select Seat Position:</label>
+                <select name="selectedPosition" id="positionSelect" required>
+                    <% ride.pos.split(',').forEach(function(position) { %>
+                        <option value="<%= position.trim() %>"><%= position.trim() %></option>
+                    <% }); %>
+                </select>
+            </div>
+
+            <!-- Book Button -->
+            <form action="/bookRide" method="GET" onsubmit="return setSelectedPosition();">
+                <input type="hidden" name="rideId" value="<%= ride.rideid %>">
+                <input type="hidden" name="seatNum" value="<%= ride.seatnum %>">
+                <input type="hidden" id="selectedPosition" name="selectedPosition" required>
+                <button type="submit" class="book-button">Book</button>
+            </form>
+        </section>
+
+        <!-- Footer -->
+        <%- include('components/footer.ejs') %>
+    </div>
+
+    <script>
+        function setSelectedPosition() {
+            const positionSelect = document.getElementById('positionSelect');
+            const selectedPositionInput = document.getElementById('selectedPosition');
+            selectedPositionInput.value = positionSelect.value; // Set hidden input to the selected value
+            return true; // Allow form submission
+        }
+    </script>
+</body>
+</html>

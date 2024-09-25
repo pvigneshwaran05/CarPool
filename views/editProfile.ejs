@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Campus Carpool Connect</title>
+    <link rel="stylesheet" href="editProfile.css">
+</head>
+<body>
+    <div class="edit-profile-page">
+
+        <%- include('components/navbar.ejs') %>
+
+        <header class="edit-profile-header">
+            <h1>Edit Profile</h1>
+            <p>Update your account details below.</p>
+        </header>
+
+        <section class="edit-profile-form-section">
+            <form class="edit-profile-form" action="/updateProfile" method="POST">
+                <input type="hidden" name="id" value="<%= user.id %>">
+                <div class="form-row">
+                    <label for="rollNo">Roll Number:</label>
+                    <input type="text" id="rollNo" name="rollNo" value="<%= user.rollno %>" readonly>
+                </div>
+                <div class="form-row">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" value="<%= user.name %>" required>
+                </div>
+                <div class="form-row">
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender" required>
+                        <option value="male" <%= user.gender === 'male' ? 'selected' : '' %>>Male</option>
+                        <option value="female" <%= user.gender === 'female' ? 'selected' : '' %>>Female</option>
+                        <option value="other" <%= user.gender === 'other' ? 'selected' : '' %>>Other</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="carName">Name of Car:</label>
+                    <input type="text" id="carName" name="carName" value="<%= user.carname %>">
+                </div>
+                <div class="form-row">
+                    <label for="course">Course:</label>
+                    <input type="text" id="course" name="course" value="<%= user.course %>" required>
+                </div>
+                <div class="form-row">
+                    <label for="year">Year of Study:</label>
+                    <input type="number" id="year" name="year" value="<%= user.studyyear %>" min="1" max="5" required>
+                </div>
+                <div class="form-row">
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" value="<%= user.phone %>" required>
+                </div>
+
+                <button type="submit" class="cta-button">Update Profile</button>
+            </form>
+        </section>
+
+        <%- include('components/footer.ejs') %>
+    </div>
+</body>
+</html>

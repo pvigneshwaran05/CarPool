@@ -1,0 +1,135 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #007bff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-logo {
+    font-size: 1.5em;
+    color: white;
+}
+
+.navbar-links a {
+    margin-left: 20px;
+    color: white;
+    font-size: 1em;
+    text-decoration: none;
+}
+
+.navbar-links a:hover {
+    text-decoration: underline;
+}
+
+/* Section Title */
+h1 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-top: 20px;
+    color: #007bff;
+}
+
+/* Ride Section Container */
+.ride-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Adds space between created and booked rides */
+    margin: 20px auto;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+/* Created Rides Section (on the Left) */
+.created-rides, .booked-rides {
+    flex: 1;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Background styles for each ride item */
+.ride-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: #e7f3fe; /* Light blue background */
+    border-left: 5px solid #007bff; /* Blue left border */
+}
+
+/* Section Titles */
+.ride-container h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #007bff;
+}
+
+/* Ride List Styles */
+.ride-list {
+    list-style: none;
+    padding: 0;
+}
+
+/* Button Styles */
+button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+button[name="action"][value="reject"] {
+    background-color: #dc3545;
+    color: white;
+}
+
+button[name="action"][value="reject"]:hover {
+    background-color: #c82333;
+}
+
+/* No Rides Message */
+.no-rides {
+    font-size: 1.2em;
+    color: #666;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+    .ride-container {
+        flex-direction: column; /* Stacks the columns */
+    }
+
+    .created-rides, .booked-rides {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Rides - Campus Carpool Connect</title>
+    <link rel="stylesheet" href="rideStatus.css">
+</head>
+<body>
+    <div class="user-rides-page">
+        <!-- Navbar -->
+        <%- include('components/navbar.ejs') %>
+
+        <!-- Ride Section -->
+        <section class="ride-container">
+            <!-- Created Rides on the Left -->
+            <div class="created-rides">
+                <h2>Created Rides</h2>
+                <ul class="ride-list">
+                    <% if (ride.length > 0) { %>
+                        <% ride.forEach(function(rideItem) { %>
+                            <li class="ride-item">
+                                <!-- Display the ride details once -->
+                                <p><strong>From College to Destination:</strong> <%= rideItem.destination %></p>
+                                <p>The ride is scheduled to start at: <%= new Date(rideItem.starttime).toLocaleString() %></p>
+                                <p><strong>Car Name:</strong> <%= rideItem.carname %></p>
+                                
+                                <!-- Confirmed Bookings -->
+                                <h4>Confirmed Bookings:</h4>
+                                <% const confirmedRides = ridelist.filter(r => r.rideid === rideItem.rideid && r.confirmed === 1); %>
+                                <% if (confirmedRides.length > 0) { %>
+                                    <% confirmedRides.forEach(function(confirmedRide) { %>
+                                        <p>
+                                            The ride has been confirmed with <%= confirmedRide.namer %> 
+                                            (Seat: <%= confirmedRide.seatnum %>, 
+                                            Position: <%= confirmedRide.seatpos || 'Not specified' %>)
+                                        </p>
+                                    <% }); %>
+                                <% } else { %>
+                                    <p>No confirmed bookings for this ride yet.</p>
+                                <% } %>
+
+                                <!-- Pending Requests -->
+                                <h4>Pending Requests:</h4>
+                                <% const pendingRides = ridelist.filter(r => r.rideid === rideItem.rideid && r.confirmed === 0); %>
+                                <% if (pendingRides.length > 0) { %>
+                                    <% pendingRides.forEach(function(pendingRide) { %>
+                                        <p>
+                                            Pending request from <%= pendingRide.namer %> 
+                                            (Seat: <%= pendingRide.seatnum %>, 
+                                            Position: <%= pendingRide.seatpos || 'Not specified' %>)
+                                        </p>
+                                        <!-- Accept/Reject Buttons for Pending Requests -->
+                                        <form action="/updateRideRequest" method="POST">
+                                            <input type="hidden" name="rideId" value="<%= pendingRide.thisrideid %>">
+                                            <input type="hidden" name="rider" value="<%= pendingRide.rollr %>">
+                                            <button type="submit" name="action" value="accept">Accept</button>
+                                            <button type="submit" name="action" value="reject">Reject</button>
+                                        </form>
+                                    <% }); %>
+                                <% } else { %>
+                                    <p>No pending requests.</p>
+                                <% } %>
+                            </li>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="no-rides">You have not created any rides.</p>
+                    <% } %>
+                </ul>
+            </div>
+
+            <!-- Booked Rides on the Right (Unchanged) -->
+            <div class="booked-rides">
+                <h2>Booked Rides</h2>
+                <ul class="ride-list">
+                    <% if (bookedRides.length > 0) { %>
+                        <% bookedRides.forEach(function(ride) { %>
+                            <li class="ride-item">
+                                <p>You have booked the ride on <%= new Date(ride.starttime).toLocaleDateString() %> to <strong><%= ride.destination %></strong></p>
+                                <p><strong>Car Owner:</strong> <%= ride.namec %></p>
+                                <p><strong>Car Name:</strong> <%= ride.carname %></p>
+                                <p><strong>Seat Position:</strong> <%= ride.seatpos || 'Not specified' %></p>
+                                
+                                <% if (ride.confirmed === 1) { %>
+                                    <p>Your booking has been <strong>confirmed</strong> by the car owner.</p>
+                                <% } else if (ride.confirmed === 0) { %>
+                                    <p>Your request has been sent to the car owner but has <strong>not been seen</strong> yet.</p>
+                                <% } else if (ride.confirmed === -1) { %>
+                                    <p>Your request has been <strong>rejected</strong>.</p>
+                                <% } else { %>
+                                    <p>Your request is <strong>pending</strong>.</p>
+                                <% } %>
+                            </li>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="no-rides">You have not booked any rides.</p>
+                    <% } %>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <%- include('components/footer.ejs') %>
+    </div>
+</body>
+</html>

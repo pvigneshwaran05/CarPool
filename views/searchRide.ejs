@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Rides - Campus Carpool Connect</title>
+    <link rel="stylesheet" href="searchRide.css">
+</head>
+<body>
+    <div class="search-ride-page">
+        
+        <%- include('components/navbar.ejs') %>
+
+        <header class="search-ride-header">
+            <h1>Available Rides</h1>
+            <p>Select a ride to see more details and join.</p>
+        </header>
+
+        <section class="ride-list-section">
+            <div class="ride-list">
+                <!-- Include the ride tab component for each ride -->
+                <% rides.forEach(function(ride) { %>
+                    <%- include('components/rideTab', { ride: ride }) %>
+                <% }); %>
+            </div>
+        </section>
+
+        <%- include('components/footer.ejs') %>
+    </div>
+</body>
+</html>

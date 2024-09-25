@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Campus Carpool Connect</title>
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+    <div class="profile-page">
+        <!-- Navbar -->
+        
+        <%- include('components/navbar.ejs') %>
+
+        <!-- Profile Header -->
+        <header class="profile-header">
+            <h1>Welcome, <%= user.name %></h1>
+            <p>Your personal profile and ride preferences</p>
+        </header>
+
+        <!-- Profile Details Section -->
+        <section class="profile-details">
+            <div class="profile-card">
+                <h2>Profile Information</h2>
+                <div class="profile-info">
+                    <div class="info-row">
+                        <strong>Roll Number:</strong>
+                        <span><%= user.rollno %></span>
+                    </div>
+                    <div class="info-row">
+                        <strong>Name:</strong>
+                        <span><%= user.name %></span>
+                    </div>
+                    <div class="info-row">
+                        <strong>Gender:</strong>
+                        <span><%= user.gender %></span>
+                    </div>
+                    <div class="info-row">
+                        <strong>Name of Car:</strong>
+                        <!-- <span><%= user.carname ? user.carname : 'N/A' %></span> -->
+                        <span><%= user.carname %></span>
+                    </div>
+                    <div class="info-row">
+                        <strong>Course:</strong>
+                        <span><%= user.course %></span>
+                    </div>
+                    <div class="info-row">
+                        <strong>Year of Study:</strong>
+                        <span><%= user.studyyear %></span>
+                    </div>
+                    <div class="info-row">
+                        <strong>Phone Number:</strong>
+                        <span><%= user.phone %></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <a href="/editProfile" class="edit-button">Edit Profile</a>
+                <a href="/rides" class="view-rides-button">View Your Rides</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <%- include('components/footer.ejs') %>
+    </div>
+</body>
+</html>

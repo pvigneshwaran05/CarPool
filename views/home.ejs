@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Carpool Connect</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+<body>
+    <div class="homepage">
+        <!-- <nav class="navbar">
+            <div class="navbar-logo">Campus Carpool Connect</div>
+            <div class="navbar-links">
+                <a href="#">Create Ride</a>
+            </div>
+        </nav> -->
+
+        <% if (typeof user == 'undefined') { %>
+
+            <nav class="navbar">
+                <div class="navbar-logo">Campus Carpool Connect</div>
+                <div class="navbar-links">
+                    <a href="/login">Log In</a>
+                    <a href="/signUp">Sign Up</a>
+                </div>
+            </nav>
+
+        <header class="hero-section">
+            <h1>Welcome to Campus Carpool Connect</h1>
+            <p>Safe, efficient, and eco-friendly ride-sharing within your campus community.</p>
+            <a href="/signUp" class="cta-button">Sign Up</a>
+            <a href="/login" class="cta-button">Log In</a>
+        </header>
+
+        <% }  else { %>
+
+            <%- include('components/navbar.ejs') %>
+
+            <header class="hero-section">
+                <h1>Welcome <%= user.name %></h1>
+                <p>Safe, efficient, and eco-friendly ride-sharing within your campus community.</p>
+                <a href="/createRide" class="cta-button">Create Ride</a>
+                <a href="/searchRide" class="cta-button">Search Ride</a>
+            </header>
+
+        <% } %>
+
+        <section id="features" class="features-section">
+            <h2>Our Features</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3>Create a Ride</h3>
+                    <p>Easily create a ride for others to join, with detailed information and flexible options.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Search for Rides</h3>
+                    <p>Find available rides that match your schedule and location, making commuting easier.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Real-Time Tracking</h3>
+                    <p>Track rides in real-time with GPS, ensuring safety and peace of mind for everyone.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Parent Monitoring</h3>
+                    <p>Allow parents to monitor their children’s rides, adding an extra layer of security.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- <footer id="contact" class="footer">
+            <p>Contact Us: support@campuscarpool.com</p>
+            <div class="social-media-links">
+                <a href="#facebook">Facebook</a>
+                <a href="#twitter">Twitter</a>
+                <a href="#instagram">Instagram</a>
+            </div>
+            <p>&copy; 2024 Campus Carpool Connect. All rights reserved.</p>
+        </footer> -->
+
+        <%- include('components/footer.ejs') %>
+    </div>
+</body>
+</html>

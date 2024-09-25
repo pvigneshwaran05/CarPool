@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="searchRide.css">
+</head>
+<body>
+    <div class="ride-tab">
+        <div class="ride-details">
+            <p><strong>Car Owner:</strong> <%= ride.name %></p>
+            <p><strong>Destination:</strong> <%= ride.destination %></p>
+            <p><strong>Start Time:</strong> <%= ride.starttime %></p>
+        </div>
+        <div class="ride-action">
+            <!-- <form action="/checkRide/<%= ride.id %>" method="GET"> -->
+            <form action="/rideInfo/<%= ride.rideid %>" method="GET">
+                <button type="submit" class="check-ride-button">Check Ride</button>
+            </form>
+        </div>
+    </div>
+    
+</body>
+</html>

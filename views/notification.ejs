@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Campus Carpool Connect</title>
+    <link rel="stylesheet" href="/styles/notifications.css">
+</head>
+<body>
+    <!-- Navbar (optional) -->
+    <%- include('components/navbar.ejs') %>
+
+    <div class="notifications-page">
+        <h1>Notifications</h1>
+
+        <!-- Car Owner Notifications (New Ride Requests) -->
+        <div class="notification-section">
+            <h2>New Ride Requests (Car Owner)</h2>
+            <% if (newRequests.length > 0) { %>
+                <ul>
+                    <% newRequests.forEach(function(request) { %>
+                        <li>
+                            <p><strong><%= request.riderName %></strong> has requested a ride to <strong><%= request.destination %></strong>.</p>
+                            <p>Request received at <%= new Date(request.requestTime).toLocaleString() %>.</p>
+                            
+                            <!-- Accept and Reject buttons -->
+                            <form action="/ride/respond" method="POST" class="response-form">
+                                <input type="hidden" name="rideId" value="<%= request.rideId %>">
+                                <button type="submit" name="response" value="accept">Accept</button>
+                                <button type="submit" name="response" value="reject">Reject</button>
+                            </form>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p>No new ride requests.</p>
+            <% } %>
+        </div>
+
+        <!-- Rider Notifications (Ride Request Status) -->
+        <div class="notification-section">
+            <h2>Ride Request Status (Rider)</h2>
+            <% if (requestStatus.length > 0) { %>
+                <ul>
+                    <% requestStatus.forEach(function(status) { %>
+                        <li>
+                            <p>Your ride request for <strong><%= status.destination %></strong> has been <strong><%= status.confirmed === 1 ? 'Accepted' : 'Rejected' %></strong>.</p>
+                            <% if (status.confirmed === -1) { %>
+                                <p>Reason for rejection: <%= status.reason %></p>
+                            <% } %>
+                            <p>Updated at <%= new Date(status.updatedAt).toLocaleString() %>.</p>
+                            <a href="/rideDetails/<%= status.rideId %>">View Ride</a>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p>No recent updates on your ride requests.</p>
+            <% } %>
+        </div>
+
+        <!-- Link to View Status page -->
+        <div class="view-status-link">
+            <a href="/viewStatus">View My Created Rides</a>
+        </div>
+
+    </div>
+
+    <!-- Footer (optional) -->
+    <%- include('components/footer.ejs') %>
+</body>
+</html>
