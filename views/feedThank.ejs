@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - Campus Carpool Connect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .thank-you-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #6c63ff;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-logo {
+            font-size: 1.8em;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            margin-left: 20px;
+            color: white;
+            font-size: 1.1em;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .navbar-links a:hover {
+            background-color: #5a52d5;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .thank-you-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(108, 99, 255, 0.2);
+            max-width: 600px;
+            width: 90%;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .thank-you-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            background-color: #6c63ff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: scaleIn 0.5s ease-out 0.3s both;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .checkmark {
+            color: white;
+            font-size: 50px;
+            animation: drawCheck 0.5s ease-out 0.8s both;
+        }
+
+        h1 {
+            color: #6c63ff;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-out 0.4s both;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-out 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: #6c63ff;
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-out 0.6s both;
+        }
+
+        .back-button:hover {
+            background-color: #5a52d5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(108, 99, 255, 0.3);
+        }
+
+        /* Footer Styles */
+        .footer {
+            padding: 30px 5%;
+            background-color: #6c63ff;
+            color: white;
+            text-align: center;
+            margin-top: auto;
+            border-radius: 50px 50px 0 0;
+        }
+
+        .social-media-links {
+            margin: 20px 0;
+        }
+
+        .social-media-links a {
+            margin: 0 15px;
+            color: white;
+            font-size: 1.3em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-media-links a:hover {
+            color: #ff6464;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .ride-container {
+                flex-direction: column;
+            }
+            
+            .navbar {
+                padding: 15px 3%;
+            }
+            
+            .navbar-links a {
+                margin-left: 10px;
+                font-size: 1em;
+                padding: 6px 10px;
+            }
+
+            .thank-you-card {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            p {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="thank-you-container">
+        <%- include('components/navbar.ejs') %>
+
+        <div class="main-content">
+            <div class="thank-you-card">
+                <div class="thank-you-icon">
+                    <span class="checkmark">✓</span>
+                </div>
+                <h1>Thank You!</h1>
+                <p>Your feedback has been successfully submitted. We greatly appreciate your input as it helps us improve our carpooling community!</p>
+                <a href="/home" class="back-button">Back to Home</a>
+            </div>
+        </div>
+
+        <%- include('components/footer.ejs') %>
+    </div>
+</body>
+</html>

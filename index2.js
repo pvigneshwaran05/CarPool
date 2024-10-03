@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import axios from "axios";
 import pg from "pg";
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
 // Create transporter for Nodemailer
 const transporter = nodemailer.createTransport({
@@ -16,12 +17,14 @@ const transporter = nodemailer.createTransport({
 const app = express();
 const port = 3000;
 
+dotenv.config();
 
 const db = new pg.Client({
     user : "postgres",
     host : "localhost",
     database : "CarPool",
-    password : "vignesh@05",
+    // password : "vignesh@05",
+    password : process.env.DATABASE_PASS,
     port : 5432,
 });
   
@@ -133,6 +136,29 @@ app.get("/home",async(req,res)=>{
 
 app.get("/profile",async(req,res)=>{
     res.render("profile.ejs", {user : currentUser});
+});
+
+var result1;
+var result2;
+var result3;
+
+app.get("/viewHistory/:r",async(req,res)=>{
+  var rollNo = req.params.r;
+  data = await db.query("select * from ridelist where rollno = $1 and status = 1",[rollNo]);
+  result1 = data.rows;
+  // console.log(result1);
+
+  data = await db.query("select * from ridehistory where rollc = $1",[rollNo]);
+  result2 = data.rows;
+  // console.log(result2);
+
+
+  data = await db.query("select * from ridehistory where rollr = $1",[rollNo]);
+  result3 = data.rows;
+  // console.log(result3);
+
+
+  res.render("rideHistory1.ejs",{ride : result1, ridelist: result2, bookedRides : result3});
 });
 
 app.get("/editProfile",async(req,res)=>{
@@ -307,13 +333,15 @@ app.post("/getFeedback",async(req,res)=>{
   // console.log(id, rating, desc);
   await db.query("UPDATE ridehistory SET feedback = $1, rating = $2, comfort = $3, fbit = 1 WHERE thisrideid = $4",[desc, rating, comfort, id]);
   // await db.query("Update ridehistory set fbit = 1 where thisrideid = $1",[id]);
+
+  res.render("feedThank.ejs");
 });
 
 app.get("/searchRide",async(req,res)=>{
 
   var currentTime = new Date();
 
-  data = await db.query("Select * from ridelist where seatnum > 0 and rollno not in ($1) and starttime < $2 and status = 0",[currentUser.rollno,currentTime]);
+  data = await db.query("Select * from ridelist where seatnum > 0 and rollno not in ($1) and status = 0",[currentUser.rollno]);
   rides = data.rows;
 
   res.render("searchRide.ejs", {rides : rides});
@@ -418,15 +446,25 @@ app.get("/viewProfile",async(req,res)=>{
     res.render("otherProfile.ejs",{user : tempUser});
 });
 
-app.get("/currentRides",async(req,res)=>{
-    var currentTime = new Date();
-    data = await db.query("Select * from ride where starttime < $1 and rollr = $2 or rollc = $3",[currentTime,currentUser.rollno,currentUser.rollno]);
-    var ongoing = data.rows;
-    var bit = 0
-    if(ongoing[0].rollc == currentUser.rollno)
-      bit = 1
+app.get("/currentRides", async(req,res) => {
+  // Format current time to match your database format
+  const currentTime = new Date().toISOString().slice(0, 16);
+  
+  // console.log("Current Time formatted:", currentTime); 
+  
+  data = await db.query(
+      "SELECT * FROM ride WHERE starttime > $1 AND (rollr = $2 OR rollc = $3)",
+      [currentTime, currentUser.rollno, currentUser.rollno]
+  );
+  
+  var ongoing = data.rows;
+  var bit = 0;
+  if(ongoing.length != 0 && ongoing[0].rollc == currentUser.rollno) {
+      bit = 1;
+  }
 
-    res.render("ongoing.ejs",{ongoingRides : ongoing,bit : bit});
+  var display = [ongoing[0]]
+  res.render("ongoing.ejs", {ongoingRides: display, bit: bit});
 });
 
 app.post("/completeRide",async(req,res)=>{

@@ -1,0 +1,87 @@
+/* Existing styles */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+    line-height: 1.6;
+}
+
+.user-rides-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.ride-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 40px 5%;
+    gap: 30px;
+}
+
+.created-rides, .booked-rides {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+    color: #6c63ff;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.ride-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.ride-item {
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* New styles for feedback */
+.feedback-section {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.star-rating {
+    color: #ffd700;
+    font-size: 18px;
+}
+
+.passenger-info {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.feedback-button {
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .ride-container {
+        flex-direction: column;
+    }
+}

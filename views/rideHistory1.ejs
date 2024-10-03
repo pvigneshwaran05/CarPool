@@ -6,7 +6,12 @@
     <title>Ride History - Campus Carpool Connect</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Existing styles */
+        /* Reset and Base Styles */
+        * {
+            box-sizing: border-box;
+            text-decoration: none;
+        }
+
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -15,6 +20,44 @@
             line-height: 1.6;
         }
 
+        /* Navbar Styles */
+        .navbar {
+            background-color: #6c63ff;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+        }
+
+        .navbar-logo {
+            font-size: 1.8em;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            margin-left: 20px;
+            color: white;
+            font-size: 1.1em;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Styles */
         .user-rides-page {
             display: flex;
             flex-direction: column;
@@ -34,6 +77,11 @@
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .created-rides:hover, .booked-rides:hover {
+            transform: translateY(-5px);
         }
 
         h2 {
@@ -41,6 +89,17 @@
             font-size: 2em;
             margin-bottom: 20px;
             text-align: center;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: #6c63ff;
+            margin: 10px auto 0;
+            border-radius: 2px;
         }
 
         .ride-list {
@@ -54,9 +113,15 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
-        /* New styles for feedback */
+        .ride-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Feedback Styles */
         .feedback-section {
             margin-top: 15px;
             padding-top: 15px;
@@ -66,6 +131,7 @@
         .star-rating {
             color: #ffd700;
             font-size: 18px;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
         }
 
         .passenger-info {
@@ -74,23 +140,75 @@
             padding: 15px;
             margin-top: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .passenger-info:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .feedback-button {
             background-color: #6c63ff;
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 10px 20px;
             border-radius: 20px;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
             margin-top: 10px;
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
 
+        .feedback-button:hover {
+            background-color: #5a52d5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(108, 99, 255, 0.3);
+        }
+
+        /* Footer Styles */
+        .footer {
+            padding: 30px 5%;
+            background-color: #6c63ff;
+            color: white;
+            text-align: center;
+            margin-top: auto;
+            border-radius: 50px 50px 0 0;
+        }
+
+        .social-media-links {
+            margin: 20px 0;
+        }
+
+        .social-media-links a {
+            margin: 0 15px;
+            color: white;
+            font-size: 1.3em;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .social-media-links a:hover {
+            color: #ffffff;
+            transform: translateY(-3px);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .ride-container {
                 flex-direction: column;
+            }
+            
+            .navbar {
+                padding: 15px 3%;
+            }
+            
+            .navbar-links a {
+                margin-left: 10px;
+                font-size: 1em;
+                padding: 6px 10px;
             }
         }
     </style>
@@ -111,7 +229,7 @@
                                 <p><strong>Date:</strong> <%= new Date(rideItem.starttime).toLocaleString() %></p>
                                 
                                 <h4>Passengers Who Travelled</h4>
-                                <% const confirmedRides = ridelist.filter(r => r.rideid === rideItem.rideid && r.confirmed === 1); %>
+                                <% const confirmedRides = ridelist.filter(r => r.rideid === rideItem.rideid); %>
                                 <% if (confirmedRides.length > 0) { %>
                                     <% confirmedRides.forEach(function(passenger) { %>
                                         <div class="passenger-info">
@@ -122,12 +240,12 @@
                                                 <div class="feedback-section">
                                                     <p><strong>Their Feedback:</strong></p>
                                                     <p>Rating: <span class="star-rating">
-                                                        <%= '★'.repeat(passenger.feedback.rating) %>
-                                                        <%= '☆'.repeat(5 - passenger.feedback.rating) %>
+                                                        <%= '★'.repeat(passenger.rating) %>
+                                                        <%= '☆'.repeat(5 - passenger.rating) %>
                                                     </span></p>
-                                                    <p><strong>Comfort:</strong> <%= passenger.feedback.comfort %></p>
-                                                    <% if (passenger.feedback.comments) { %>
-                                                        <p><strong>Comments:</strong> <%= passenger.feedback.comments %></p>
+                                                    <p><strong>Comfort:</strong> <%= passenger.comfort %></p>
+                                                    <% if (passenger.feedback) { %>
+                                                        <p><strong>Comments:</strong> <%= passenger.feedback %></p>
                                                     <% } %>
                                                 </div>
                                             <% } else { %>
@@ -141,7 +259,7 @@
                             </li>
                         <% }); %>
                     <% } else { %>
-                        <p class="no-rides">You have not created any rides.</p>
+                        <p class="no-rides">None of the created rides are over</p>
                     <% } %>
                 </ul>
             </div>
@@ -158,7 +276,7 @@
                                 <p><strong>Car Owner:</strong> <%= ride.namec %></p>
                                 <p><strong>Car:</strong> <%= ride.carname %></p>
                                 
-                                <% if (ride.confirmed === 1) { %>
+                                <% if (ride.fbit === 1) { %>
                                     <div class="feedback-section">
                                         <% if (ride.feedback) { %>
                                             <h4>Your Feedback</h4>
@@ -167,23 +285,23 @@
                                                 <%= '☆'.repeat(5 - ride.rating) %>
                                             </span></p>
                                             <p><strong>Comfort:</strong> <%= ride.comfort %></p>
-                                            <% if (ride.comments) { %>
-                                                <p><strong>Your Comments:</strong> <%= ride.comments %></p>
+                                            <% if (ride.feedback) { %>
+                                                <p><strong>Your Comments:</strong> <%= ride.feedback %></p>
                                             <% } %>
                                         <% } else { %>
                                             <p><em>You haven't provided feedback yet</em></p>
                                             <a href="/feedback/<%= ride.thisrideid %>" class="feedback-button">Provide Feedback</a>
                                         <% } %>
                                     </div>
-                                <% } else if (ride.confirmed === -1) { %>
-                                    <p><strong>Status:</strong> Request was rejected</p>
+                                <!-- <% } else if (ride.confirmed === -1) { %>
+                                    <p><strong>Status:</strong> Request was rejected</p> -->
                                 <% } else { %>
-                                    <p><strong>Status:</strong> Request is pending</p>
+                                    <p><strong>Status:</strong> You have not yet provided feedback for this ride</p>
                                 <% } %>
                             </li>
                         <% }); %>
                     <% } else { %>
-                        <p class="no-rides">You have not booked any rides.</p>
+                        <p class="no-rides">None of the booked rides are over</p>
                     <% } %>
                 </ul>
             </div>
