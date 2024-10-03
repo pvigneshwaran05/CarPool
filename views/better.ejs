@@ -7,24 +7,28 @@
     <link rel="stylesheet" href="better.css">
 </head>
 <body>
-    <div class="rejection-page">
-        <h1>Reject Booking Request</h1>
-        <p>Please provide a reason for rejecting this booking request:</p>
 
-        <form action="/ride/reject" method="POST">
-            <input type="hidden" name="rideId" value="<%= rideId %>">
-            <input type="hidden" name="rider" value="<%= rider %>">
+    <%- include('components/navbar.ejs') %>
+
+    <div class="rejection-page">
+
+        <h1>Reject Booking Request</h1>
+         <p>Please provide a reason for rejecting this booking request:</p>
+
+        <!-- <form action="/ride/reject" method="POST">
+            <input type="hidden" name="rideId" value="<%=  %>">
+            <input type="hidden" name="rider" value="">
             
             <textarea name="reason" placeholder="Enter the reason for rejection" required></textarea>
             
             <button type="submit">Submit Reason</button>
-        </form>
+        </form> -->
 
         <a href="/home">Cancel</a>
 
-        <%- include('components/footer.ejs') %>
-
 
     </div>
+
+    <%- include('components/footer.ejs') %>
 </body>
 </html>

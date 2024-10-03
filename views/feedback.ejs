@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Feedback - Campus Carpool Connect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="feedback.css">
+</head>
+<body>
+    <%- include('components/navbar.ejs') %>
+
+    <div class="feedback-page">
+        <div class="feedback-container">
+            <h1>Submit Your Feedback</h1>
+            
+            <div class="ride-details">
+                <h2>Ride Details</h2>
+                <p><strong>Destination:</strong> <%= ride.destination %></p>
+                <p><strong>Date:</strong> <%= new Date(ride.starttime).toLocaleDateString() %></p>
+                <p><strong>Time:</strong> <%= new Date(ride.starttime).toLocaleTimeString() %></p>
+                <p><strong>Car Owner:</strong> <%= ride.namec %></p>
+            </div>
+
+            <form action="/getFeedback" method="POST" class="feedback-form">
+                <div class="rating-container">
+                    <label>Rate your experience:</label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5" required>
+                        <label for="star5">★</label>
+                        <input type="radio" id="star4" name="rating" value="4">
+                        <label for="star4">★</label>
+                        <input type="radio" id="star3" name="rating" value="3">
+                        <label for="star3">★</label>
+                        <input type="radio" id="star2" name="rating" value="2">
+                        <label for="star2">★</label>
+                        <input type="radio" id="star1" name="rating" value="1">
+                        <label for="star1">★</label>
+                    </div>
+                </div>
+
+                <!-- <div class="form-group">
+                    <label for="punctuality">How was the punctuality?</label>
+                    <select id="punctuality" name="punctuality" required>
+                        <option value="">Select an option</option>
+                        <option value="early">Early</option>
+                        <option value="ontime">On Time</option>
+                        <option value="slight-delay">Slight Delay</option>
+                        <option value="late">Late</option>
+                    </select>
+                </div> -->
+
+                <div class="form-group">
+                    <label for="comfort">How comfortable was the ride?</label>
+                    <select id="comfort" name="comfort" required>
+                        <option value="">Select an option</option>
+                        <option value="very-comfortable">Very Comfortable</option>
+                        <option value="comfortable">Comfortable</option>
+                        <option value="average">Average</option>
+                        <option value="uncomfortable">Uncomfortable</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="comments">Tell us about the ride</label>
+                    <textarea id="comments" name="comments" rows="4" placeholder="Share your experience..."></textarea>
+                </div>
+
+                <input type="hidden" name="id" value="<%= ride.thisrideid %>">
+                <button type="submit" class="submit-button">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+
+    <%- include('components/footer.ejs') %>
+</body>
+</html>

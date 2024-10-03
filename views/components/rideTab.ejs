@@ -11,7 +11,7 @@
         <div class="ride-details">
             <p><strong>Car Owner:</strong> <%= ride.name %></p>
             <p><strong>Destination:</strong> <%= ride.destination %></p>
-            <p><strong>Start Time:</strong> <%= ride.starttime %></p>
+            <p><strong>Start Time:</strong> <%= new Date(ride.starttime).toLocaleString() %></p>
         </div>
         <div class="ride-action">
             <!-- <form action="/checkRide/<%= ride.id %>" method="GET"> -->

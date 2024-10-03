@@ -1,0 +1,263 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+.notifications-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+h1 {
+    color: #6c63ff;
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #ff6464;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+/* Notification Container */
+.notification-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.notification-section {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.notification-section.left {
+    border-left: 5px solid #6c63ff;
+}
+
+.notification-section.right {
+    border-left: 5px solid #ff6464;
+}
+
+/* Notification List */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+li:hover {
+    transform: translateY(-3px);
+}
+
+/* Text Styles */
+p {
+    margin: 10px 0;
+}
+
+strong {
+    color: #6c63ff;
+}
+
+/* Buttons and Links */
+.response-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+a{
+    color: white;
+}
+
+button, a {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+}
+
+button[value="accept"], a {
+    background-color: #6c63ff;
+    color: white;
+}
+
+button[value="reject"] {
+    background-color: #ff6464;
+    color: white;
+}
+
+button:hover, a:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* View Status Link */
+.view-status-link {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.view-status-link a {
+    font-size: 1.1em;
+    padding: 10px 20px;
+    color: white;
+}
+
+.c{
+    color: white;
+}
+/* Feedback Notification Section */
+/* Feedback Section Styles */
+.feedback-section {
+    margin-top: 40px;
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-section h2 {
+    color: #6c63ff;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.feedback-intro {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.feedback-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.feedback-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feedback-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(108, 99, 255, 0.1);
+}
+
+.feedback-card-header {
+    background-color: #6c63ff;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.feedback-card-header h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.feedback-date {
+    font-size: 0.9em;
+    opacity: 0.9;
+}
+
+.feedback-card-content {
+    padding: 15px;
+}
+
+.feedback-card-content p {
+    margin: 10px 0;
+}
+
+.label {
+    font-weight: 600;
+    color: #6c63ff;
+}
+
+.feedback-card-footer {
+    padding: 15px;
+    text-align: center;
+}
+
+.feedback-button {
+    display: inline-block;
+    background-color: #6c63ff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.feedback-button:hover {
+    background-color: #5b52ff;
+}
+
+.no-feedback {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .feedback-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .feedback-card-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .feedback-date {
+        margin-top: 5px;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .notification-container {
+        flex-direction: column;
+    }
+
+    .notification-section {
+        margin-bottom: 30px;
+    }
+}
+
+/* No Notifications Message */
+.notification-section > p {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}

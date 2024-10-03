@@ -1,0 +1,132 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+/* Ongoing Rides Page */
+.ongoing-rides-page {
+    padding: 80px 5%;
+    min-height: calc(100vh - 160px); /* Adjust based on navbar and footer height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rides-header {
+    text-align: center;
+    margin-bottom: 40px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.rides-header h1 {
+    font-size: 2.8em;
+    color: #6c63ff;
+    margin-bottom: 10px;
+}
+
+.rides-header p {
+    font-size: 1.2em;
+    color: #555;
+}
+
+/* Single Ride Card */
+.ride-list {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.ride-card {
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.ride-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.ride-card h2 {
+    font-size: 2.2em;
+    color: #6c63ff;
+    margin-bottom: 20px;
+}
+
+.ride-card p {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+.track-button {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #ff6464;
+    color: white;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.track-button:hover {
+    background-color: #ff4f4f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 100, 100, 0.3);
+}
+
+/* Message for No Rides */
+.no-rides-message {
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+    margin-top: 40px;
+}
+.finish-button{
+    background-color: #6c63ff;
+    border: #f0f4f8;
+}
+.finish-button:hover, a:hover {
+    background-color: #6c63ff;
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ongoing-rides-page {
+        padding: 60px 5%;
+    }
+
+    .rides-header h1 {
+        font-size: 2.4em;
+    }
+
+    .ride-card {
+        padding: 30px;
+    }
+
+    .ride-card h2 {
+        font-size: 1.8em;
+    }
+
+    .track-button {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+}

@@ -1,17 +1,19 @@
 import express, { response } from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
+import emailjs from "@emailjs/browser";
 import pg from "pg";
 
 const app = express();
 const port = 3000;
 
+emailjs.init("zQWass4PuP4hjr-zQ");
 
 const db = new pg.Client({
     user : "postgres",
     host : "localhost",
     database : "CarPool",
-    password : "123456",
+    password : "vignesh@05",
     port : 5432,
 });
   
@@ -28,6 +30,7 @@ var name;
 
 app.get("/",async(req,res)=>{
     res.render("home.ejs");
+    // res.render("startRide.ejs",{location : "Shiridi"});
 });
 
 app.get("/logout",async(req,res)=>{
@@ -192,8 +195,9 @@ app.get("/viewStatus",async(req,res)=>{
 app.post("/updateRideRequest",async(req,res)=>{
     var rideId = parseInt(req.body.rideId);
     var rollNo = req.body.rider;
-    var result = req.body.action;
+    var action = req.body.action;
     var bit;
+    var actionText;
 
     // console.log(rideId,typeof(rideId),rollNo,result);
 
@@ -202,17 +206,64 @@ app.post("/updateRideRequest",async(req,res)=>{
         return res.status(400).send("Invalid ride ID");
     }
 
-    if(result == "accept")
+    if (action === "accept") {
         bit = 1;
-    else if(result == "reject")
+        actionText = "accepted";
+      } else if (action === "reject") {
         bit = -1;
+        actionText = "rejected";
+      } else {
+        return res.status(400).send("Invalid action");
+      }
 
     db.query("Update ride set confirmed = $1 where thisrideid = $2",[bit,rideId]);
+
+
+    const requesterEmail = rollNo + "@psgtech.ac.in";
+
+    if (requesterEmail) {
+    // Prepare parameters for the email
+      const templateParams = {
+      ride_id: rideId,
+      action: actionText,
+      reply_to: requesterEmail, // Set the reply_to field
+    };
+
+    // Send notification email to the requester
+    emailjs
+      .send("service_h8fhoqu", "template_por7uyp", templateParams)
+      .then((response) => {
+        console.log(
+          "Email sent to requester successfully!",
+          response.status,
+          response.text
+        );
+      })
+      .catch((err) => {
+        console.log("Failed to send email to requester...", err);
+      });
+  }
+
+
+
     if(bit == 1)
         res.render("thankyou.ejs");
-    else if(bit==0)
+    else if(bit==-1)
         res.render("better.ejs");
-})
+});
+
+var request;
+var result1;
+
+app.get("/notify",async(req,res)=>{
+    data = await db.query("Select * from ride where rollc = $1 and confirmed = 0",[currentUser.rollno]);
+    request = data.rows;
+
+    data = await db.query("select * from ride where rollr = $1 and confirmed not in (0)",[currentUser.rollno]);
+    result1 = data.rows;
+
+    res.render("notification.ejs",{newRequests : request, requestStatus : result1});
+});
 
 app.get("/searchRide",async(req,res)=>{
 
@@ -266,10 +317,45 @@ app.get("/bookRide",async(req,res)=>{
 
     await db.query("insert into ride(rideid, rollc, namec, rollr, namer, seatnum, seatpos, destination, starttime, carname, sents, decides, recvs, confirmed) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)",
         [thisRide.rideid, thisRide.rollno, thisRide.name,currentUser.rollno,currentUser.name,1,thisRide.pos,thisRide.destination,thisRide.starttime,thisRide.carname,1,0,0,0]
-    )
+    );
+
+    var creatorEmail = thisRide.rollNo + "@psgtech.ac.in";
+
+  if (creatorEmail) {
+    // Send email notification
+    const templateParams = {
+      user_name: currentUser.name,
+      ride_id: rideId,
+      reply_to: creatorEmail,
+    };
+
+    emailjs
+      .send("service_h8fhoqu", "template_j9snk3p", templateParams)
+      .then((response) => {
+        console.log("Email sent successfully!", response.status, response.text);
+      })
+      .catch((err) => {
+        console.log("Failed to send email...", err);
+      });
+  }
 
     res.render("booked.ejs");
-})
+});
+
+app.get("/viewProfile",async(req,res)=>{
+    var tempRollNo = req.query.rollno;
+    // console.log(tempRollNo);
+
+    data = await db.query("Select * from profile where rollno = $1",[tempRollNo]);
+    var tempUser = data.rows[0];
+    // console.log(tempUser);
+    res.render("otherProfile.ejs",{user : tempUser});
+});
+
+// app.get("/currentRides",async(req,res)=>{
+//     var currentTime = new Date();
+//     data = await db.query("Select * from ride ")
+// });
 
 app.listen(port,()=>{
     console.log("Currently running on port "+port);

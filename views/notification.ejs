@@ -4,68 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications - Campus Carpool Connect</title>
-    <link rel="stylesheet" href="/styles/notifications.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="notification.css">
 </head>
 <body>
-    <!-- Navbar (optional) -->
+    <!-- Navbar -->
     <%- include('components/navbar.ejs') %>
 
     <div class="notifications-page">
         <h1>Notifications</h1>
 
-        <!-- Car Owner Notifications (New Ride Requests) -->
-        <div class="notification-section">
-            <h2>New Ride Requests (Car Owner)</h2>
-            <% if (newRequests.length > 0) { %>
-                <ul>
-                    <% newRequests.forEach(function(request) { %>
-                        <li>
-                            <p><strong><%= request.riderName %></strong> has requested a ride to <strong><%= request.destination %></strong>.</p>
-                            <p>Request received at <%= new Date(request.requestTime).toLocaleString() %>.</p>
-                            
-                            <!-- Accept and Reject buttons -->
-                            <form action="/ride/respond" method="POST" class="response-form">
-                                <input type="hidden" name="rideId" value="<%= request.rideId %>">
-                                <button type="submit" name="response" value="accept">Accept</button>
-                                <button type="submit" name="response" value="reject">Reject</button>
-                            </form>
-                        </li>
-                    <% }); %>
-                </ul>
-            <% } else { %>
-                <p>No new ride requests.</p>
-            <% } %>
-        </div>
+        <div class="notification-container">
+            <!-- Car Owner Notifications (New Ride Requests) -->
+            <div class="notification-section left">
+                <h2>New Ride Requests (Rides Created by You)</h2>
+                <% if (newRequests.length > 0) { %>
+                    <ul>
+                        <% newRequests.forEach(function(request) { %>
+                            <li>
+                                <p><strong><%= request.namer %></strong> has requested a ride to <strong><%= request.destination %> held on <%= new Date(request.starttime).toLocaleString() %>.</strong></p>
+                                
+                                <form action="/updateRideRequest" method="GET" class="response-form">
+                                    <input type="hidden" name="rideId" value="<%= request.thisrideid %>">
+                                    <input type="hidden" name="rider" value="<%= request.rollr %>">
+                                    <button type="submit" name="action" value="accept">Accept</button>
+                                    <button type="submit" name="action" value="reject">Reject</button>
+                                </form>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p>No new ride requests.</p>
+                <% } %>
+            </div>
 
-        <!-- Rider Notifications (Ride Request Status) -->
-        <div class="notification-section">
-            <h2>Ride Request Status (Rider)</h2>
-            <% if (requestStatus.length > 0) { %>
-                <ul>
-                    <% requestStatus.forEach(function(status) { %>
-                        <li>
-                            <p>Your ride request for <strong><%= status.destination %></strong> has been <strong><%= status.confirmed === 1 ? 'Accepted' : 'Rejected' %></strong>.</p>
-                            <% if (status.confirmed === -1) { %>
-                                <p>Reason for rejection: <%= status.reason %></p>
-                            <% } %>
-                            <p>Updated at <%= new Date(status.updatedAt).toLocaleString() %>.</p>
-                            <a href="/rideDetails/<%= status.rideId %>">View Ride</a>
-                        </li>
-                    <% }); %>
-                </ul>
-            <% } else { %>
-                <p>No recent updates on your ride requests.</p>
-            <% } %>
+            <!-- Rider Notifications (Ride Request Status) -->
+            <div class="notification-section right">
+                <h2>Ride Request Status (Rides Requested by You)</h2>
+                <% if (requestStatus.length > 0) { %>
+                    <ul>
+                        <% requestStatus.forEach(function(status) { %>
+                            <li>
+                                <p>Your ride request for <strong><%= status.destination %></strong> has been <strong><%= status.confirmed === 1 ? 'Accepted' : 'Rejected' %>.</strong></p>
+                                <% if (status.confirmed === -1) { %>
+                                    <p>Reason for rejection: <%= status.reason %></p>
+                                <% } %>
+                                <a href="/viewStatus">View Ride</a>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p>No recent updates on your ride requests.</p>
+                <% } %>
+            </div>
         </div>
 
         <!-- Link to View Status page -->
         <div class="view-status-link">
-            <a href="/viewStatus">View My Created Rides</a>
+            <a href="/viewStatus">View the Detailed Status of All My Rides</a>
         </div>
 
-    </div>
+        <!-- Feedback Notification Section -->
+        <div class="feedback-section">
+            <h2>Pending Feedback</h2>
+            <% if (feedbackPending.length > 0) { %>
+                <p class="feedback-intro">Your feedback is valuable to us and helps improve future rides!</p>
+                <div class="feedback-grid">
+                    <% feedbackPending.forEach(function(feedback) { %>
+                        <div class="feedback-card">
+                            <div class="feedback-card-header">
+                                <h3><%= feedback.destination %></h3>
+                                <span class="feedback-date"><%= new Date(feedback.starttime).toLocaleDateString() %></span>
+                            </div>
+                            <div class="feedback-card-content">
+                                <!-- <p><span class="label">Car Owner:</span> <%= feedback.carowner %></p>
+                                <p><span class="label">Time:</span> <%= new Date(feedback.starttime).toLocaleTimeString() %></p> -->
+                                <p>This ride was held on <%= new Date(feedback.starttime).toLocaleTimeString() %> along with <%= feedback.namec %></p>
+                            </div>
+                            <div class="feedback-card-footer">
+                                <!-- <a href="/submitFeedback/<%= feedback.rideId %>" class="feedback-button">
+                                    Give Feedback
+                                </a> -->
+                                <form action="/submitFeedback" method="POST">
+                                    <input type="hidden" name="id" value="<%= feedback.thisrideid %>">
+                                    <button type="submit" class="feedback-button">
+                                        Give Feedback
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="no-feedback">
+                    <p>No pending feedback at this time.</p>
+                </div>
+            <% } %>
+        </div>
 
-    <!-- Footer (optional) -->
-    <%- include('components/footer.ejs') %>
+    <!-- Footer -->
+    <!-- <%- include('components/footer.ejs') %> -->
 </body>
 </html>

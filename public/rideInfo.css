@@ -1,124 +1,166 @@
-/* General Styles */
-body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-}
 
-a {
-    text-decoration: none;
-    color: inherit;
-}
+        .navbar {
+            background-color: #007bff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
+        .navbar-logo {
+            font-size: 1.5em;
+            color: white;
+        }
 
-/* Ride Information Header */
-.ride-info-section {
-    background-color: #007bff;
-    color: white;
-    padding: 40px 20px;
-    text-align: center;
-    border-radius: 8px;
-    margin: 20px auto;
-    max-width: 900px;
-}
+        .navbar-links a {
+            margin-left: 20px;
+            color: white;
+            font-size: 1em;
+            text-decoration: none;
+        }
 
-.ride-info-section h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-}
+        .navbar-links a:hover {
+            text-decoration: underline;
+        }
 
-/* Ride Details Section */
-.ride-details-section {
-    padding: 40px 20px;
-    background-color: #fff;
-    max-width: 800px;
-    margin: 20px auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
 
-/* Section Titles */
-h2 {
-    font-size: 2em;
-    margin-bottom: 20px;
-    color: #007bff;
-}
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
-/* Info Rows */
-.ride-info .info-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 1.2em;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-}
+        /* Ride Information Header */
+        .ride-info-section {
+            background-color: #007bff;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 900px;
+        }
 
-.ride-info .info-row strong {
-    font-weight: bold;
-}
+        .ride-info-section h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
 
-/* Driver Details and Ride Details Cards */
-.driver-details{
-    padding: 20px;
-    background-color: #f9f9f9;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    color: black;
-    text-align: left;
-}
-.ride-details {
-    padding: 20px;
-    background-color: #f9f9f9;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    color: black;
-    text-align: left;
-}
+        /* Ride Details Section */
+        .ride-details-section {
+            padding: 40px 20px;
+            background-color: #fff;
+            max-width: 800px;
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-.driver-details p
-{
-    font-size: 1.2em;
-    margin: 8px 0;
-}
-.ride-details p {
-    font-size: 1.2em;
-    margin: 8px 0;
-}
+        /* Section Titles */
+        h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
 
-strong {
-    font-weight: bold;
-}
+        /* Info Rows */
+        .ride-info .info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
 
-/* Book Button */
-.book-button {
-    padding: 15px 30px;
-    /* background-color: #007bff; */
-    background-color: white;
-    color: #007bff;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2em;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    margin-top: 20px;
-}
+        .ride-info .info-row strong {
+            font-weight: bold;
+        }
 
-.book-button:hover {
-    background-color: wheat;
-}
+        /* Driver Details and Ride Details Cards */
+        .driver-details {
+            padding: 20px;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            color: black;
+            text-align: left;
+        }
 
-form {
-    text-align: center;
-}
+        .ride-details {
+            padding: 20px;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            color: black;
+            text-align: left;
+        }
 
-footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    margin-top: 40px;
-}
+        .driver-details p {
+            font-size: 1.2em;
+            margin: 8px 0;
+        }
+
+        .ride-details p {
+            font-size: 1.2em;
+            margin: 8px 0;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+
+        /* Book Button */
+        .book-button {
+            padding: 15px 30px;
+            background-color: #28a745; /* Green color for better visibility */
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Added shadow for depth */
+        }
+
+        .book-button:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        /* View Profile Button */
+        .view-profile-button {
+            padding: 15px 30px;
+            background-color: #007bff; /* Blue color */
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-left: 20px; /* Space from the book button */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .view-profile-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        form {
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }

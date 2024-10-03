@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Ride Location - Campus Carpool Connect</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: url("map.jpg") no-repeat center center fixed;
+            background-color: #f0f4f8;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        /* Location Container */
+        .location-container {
+            position: relative;
+            z-index: 2;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 50px auto;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #6c63ff;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        #location {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        #refresh {
+            background-color: #ff6464;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #refresh:hover {
+            background-color: #ff4f4f;
+            transform: translateY(-2px);
+        }
+
+        /* Map Container */
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .location-container {
+                margin: 30px 15px;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            #map {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Overlay to dim the map background -->
+    <div class="overlay"></div>
+
+    <!-- Navbar -->
+    <%- include('components/navbar.ejs') %>
+
+    <!-- Location Container -->
+    <div class="location-container">
+        <h1>Current Location</h1>
+        <p id="location">Fetching location...</p>
+        <button id="refresh">Refresh</button>
+  
+        <!-- Map container -->
+        <div id="map"></div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('components/footer.ejs') %>
+
+    <!-- Add Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        let map, marker;
+
+        // Initialize the map and set default view (latitude and longitude of the center)
+        function initMap(latitude = 28.644800, longitude = 77.216721) {
+            map = L.map('map').setView([latitude, longitude], 13);
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Create marker at initial location
+            marker = L.marker([latitude, longitude]).addTo(map);
+        }
+
+        // Function to update the marker and map view
+        function updateMap(latitude, longitude) {
+            if (marker) {
+                marker.setLatLng([latitude, longitude]); // Update marker position
+                map.setView([latitude, longitude]); // Center map on new location
+            }
+        }
+
+        // Function to get user's current coordinates
+        function getUserCoords() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    console.log("Latitude: " + latitude, "Longitude: " + longitude);
+
+                    // Update the map with the new location
+                    updateMap(latitude, longitude);
+
+                    // Call the function to fetch the address based on the latitude and longitude
+                    getUserAddress(latitude, longitude);
+                }, (error) => {
+                    console.error("Error getting location:", error);
+                    document.getElementById('location').innerText = 'Error getting location';
+                });
+            } else {
+                console.error("Geolocation is not supported by this browser.");
+                document.getElementById('location').innerText = 'Geolocation is not supported by this browser.';
+            }
+        }
+
+        // Function to fetch user's address based on latitude and longitude
+        async function getUserAddress(latitude, longitude) {
+            try {
+                let url = `https://api.opencagedata.com/geocode/v1/json?key=3212ebc6d42a479094ec58a5dd3bd258&q=${latitude},${longitude}&pretty=1&no_annotations=1`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data && data.results && data.results[0]) {
+                    document.getElementById('location').innerText = data.results[0].formatted;
+                } else {
+                    document.getElementById('location').innerText = "Location not found";
+                }
+            } catch (error) {
+                console.error("Error fetching location data:", error);
+                document.getElementById('location').innerText = "Error fetching location data";
+            }
+        }
+
+        // Initialize the map on page load
+        initMap();
+
+        // Fetch location on page load
+        getUserCoords();
+
+        // Set interval to update location every 2 seconds
+        setInterval(getUserCoords, 2000);
+
+        // Add event listener for the refresh button
+        document.getElementById('refresh').addEventListener('click', getUserCoords);
+    </script>
+</body>
+</html>

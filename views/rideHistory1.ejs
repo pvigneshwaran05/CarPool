@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ride History - Campus Carpool Connect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Existing styles */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .user-rides-page {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .ride-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 40px 5%;
+            gap: 30px;
+        }
+
+        .created-rides, .booked-rides {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: #6c63ff;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ride-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .ride-item {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* New styles for feedback */
+        .feedback-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .star-rating {
+            color: #ffd700;
+            font-size: 18px;
+        }
+
+        .passenger-info {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .feedback-button {
+            background-color: #6c63ff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .ride-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="user-rides-page">
+        <%- include('components/navbar.ejs') %>
+
+        <section class="ride-container">
+            <!-- Created Rides -->
+            <div class="created-rides">
+                <h2>Created Rides</h2>
+                <ul class="ride-list">
+                    <% if (ride.length > 0) { %>
+                        <% ride.forEach(function(rideItem) { %>
+                            <li class="ride-item">
+                                <p><strong>From College to:</strong> <%= rideItem.destination %></p>
+                                <p><strong>Date:</strong> <%= new Date(rideItem.starttime).toLocaleString() %></p>
+                                
+                                <h4>Passengers Who Travelled</h4>
+                                <% const confirmedRides = ridelist.filter(r => r.rideid === rideItem.rideid && r.confirmed === 1); %>
+                                <% if (confirmedRides.length > 0) { %>
+                                    <% confirmedRides.forEach(function(passenger) { %>
+                                        <div class="passenger-info">
+                                            <p><strong><%= passenger.namer %></strong></p>
+                                            <p>Seat: <%= passenger.seatnum %> (<%= passenger.seatpos || 'Not specified' %>)</p>
+                                            
+                                            <% if (passenger.feedback) { %>
+                                                <div class="feedback-section">
+                                                    <p><strong>Their Feedback:</strong></p>
+                                                    <p>Rating: <span class="star-rating">
+                                                        <%= '★'.repeat(passenger.feedback.rating) %>
+                                                        <%= '☆'.repeat(5 - passenger.feedback.rating) %>
+                                                    </span></p>
+                                                    <p><strong>Comfort:</strong> <%= passenger.feedback.comfort %></p>
+                                                    <% if (passenger.feedback.comments) { %>
+                                                        <p><strong>Comments:</strong> <%= passenger.feedback.comments %></p>
+                                                    <% } %>
+                                                </div>
+                                            <% } else { %>
+                                                <p><em>No feedback provided yet</em></p>
+                                            <% } %>
+                                        </div>
+                                    <% }); %>
+                                <% } else { %>
+                                    <p>No passengers travelled in this ride.</p>
+                                <% } %>
+                            </li>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="no-rides">You have not created any rides.</p>
+                    <% } %>
+                </ul>
+            </div>
+
+            <!-- Booked Rides -->
+            <div class="booked-rides">
+                <h2>Booked Rides</h2>
+                <ul class="ride-list">
+                    <% if (bookedRides.length > 0) { %>
+                        <% bookedRides.forEach(function(ride) { %>
+                            <li class="ride-item">
+                                <p>Ride to <strong><%= ride.destination %></strong></p>
+                                <p><strong>Date:</strong> <%= new Date(ride.starttime).toLocaleDateString() %></p>
+                                <p><strong>Car Owner:</strong> <%= ride.namec %></p>
+                                <p><strong>Car:</strong> <%= ride.carname %></p>
+                                
+                                <% if (ride.confirmed === 1) { %>
+                                    <div class="feedback-section">
+                                        <% if (ride.feedback) { %>
+                                            <h4>Your Feedback</h4>
+                                            <p>Rating: <span class="star-rating">
+                                                <%= '★'.repeat(ride.rating) %>
+                                                <%= '☆'.repeat(5 - ride.rating) %>
+                                            </span></p>
+                                            <p><strong>Comfort:</strong> <%= ride.comfort %></p>
+                                            <% if (ride.comments) { %>
+                                                <p><strong>Your Comments:</strong> <%= ride.comments %></p>
+                                            <% } %>
+                                        <% } else { %>
+                                            <p><em>You haven't provided feedback yet</em></p>
+                                            <a href="/feedback/<%= ride.thisrideid %>" class="feedback-button">Provide Feedback</a>
+                                        <% } %>
+                                    </div>
+                                <% } else if (ride.confirmed === -1) { %>
+                                    <p><strong>Status:</strong> Request was rejected</p>
+                                <% } else { %>
+                                    <p><strong>Status:</strong> Request is pending</p>
+                                <% } %>
+                            </li>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="no-rides">You have not booked any rides.</p>
+                    <% } %>
+                </ul>
+            </div>
+        </section>
+
+        <%- include('components/footer.ejs') %>
+    </div>
+</body>
+</html>

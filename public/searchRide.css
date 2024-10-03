@@ -1,102 +1,131 @@
+/* General Styles */
 body {
     margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8;
     color: #333;
+    line-height: 1.6;
 }
 
-/* Navbar */
-.navbar {
-    background-color: #007bff;
-    padding: 10px 20px;
+.search-ride-page {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-.navbar-logo {
-    font-size: 1.5em;
-    color: white;
-}
-
-.navbar-links a {
-    margin-left: 20px;
-    color: white;
-    font-size: 1em;
-    text-decoration: none;
-}
-
-.navbar-links a:hover {
-    text-decoration: underline;
-}
-
-/* Search Ride Header */
+/* Search Ride Header Styles */
 .search-ride-header {
-    background-color: #007bff;
-    color: white;
-    padding: 40px 20px;
+    background-image: linear-gradient(135deg, rgba(108, 99, 255, 0.8), rgba(255, 100, 100, 0.8));
+    background-size: cover;
+    background-position: center;
+    padding: 60px 5%;
     text-align: center;
+    color: white;
+    border-radius: 0 0 50px 50px;
 }
 
 .search-ride-header h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
+    font-size: 2.8em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .search-ride-header p {
-    font-size: 1.2em;
+    font-size: 1.4em;
+    margin-bottom: 30px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Ride List Section */
 .ride-list-section {
-    padding: 40px 20px;
-    text-align: center;
+    padding: 40px 5%;
     background-color: #fff;
+    border-radius: 20px;
+    margin: 30px 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
 }
 
 .ride-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
 }
 
-/* Ride Tab Component */
+/* Ride Tab Styles */
 .ride-tab {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 80%;
+    background-color: #f8f9fa;
+    border-radius: 10px;
     padding: 20px;
-    margin: 10px 0;
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ride-tab:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .ride-details {
-    text-align: left;
+    margin-bottom: 15px;
 }
 
 .ride-details p {
-    margin: 5px 0;
-    font-size: 1.1em;
+    margin: 8px 0;
+    color: #555;
+}
+
+.ride-details strong {
+    color: #6c63ff;
+    font-weight: 600;
 }
 
 .ride-action {
-    display: flex;
-    align-items: center;
+    align-self: flex-end;
 }
 
 .check-ride-button {
-    padding: 10px 20px;
-    background-color: #28a745;
+    background-color: #ff6464;
     color: white;
     border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
     cursor: pointer;
+    transition: all 0.3s ease;
     font-size: 1em;
-    border-radius: 5px;
+    width: 100%;
 }
 
 .check-ride-button:hover {
-    background-color: #218838;
+    background-color: #ff4f4f;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-ride-header h1 {
+        font-size: 2.2em;
+    }
+
+    .search-ride-header p {
+        font-size: 1.2em;
+    }
+
+    .ride-list-section {
+        margin: 20px 10px;
+    }
+
+    .ride-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .ride-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

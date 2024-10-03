@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ongoing Rides - Campus Carpool Connect</title>
+    <link rel="stylesheet" href="ongoing.css">         
+</head>
+<body>
+    <!-- Navbar -->
+    <%- include('components/navbar.ejs') %>
+
+    <!-- Ongoing Rides Section -->
+    <div class="ongoing-rides-page">
+        <header class="rides-header">
+            <h1>Ongoing Rides</h1>
+            <p>Below is the ride that is currently ongoing:</p>
+        </header>
+
+        <section class="ride-list">
+            <% if (ongoingRides.length > 0) { %>
+                <% ongoingRides.forEach(ride => { %>
+                    <div class="ride-card">
+                        <h2>Car Rider: <%= ride.namec %></h2>
+                        <br>
+                        <p><strong>Destination:</strong> <%= ride.destination %></p>
+                        <p><strong>Start Time:</strong> <%= new Date(ride.starttime).toLocaleString() %></p>
+                        <p><strong>Current Status:</strong> Ongoing</p>
+                        <br>
+                        <!-- <a href="/current-location/<%= ride.id %>" class="track-button">Track Current Location</a> -->
+                        <a href="/current-location" class="track-button">Track Current Location</a>
+                        <% if(bit == 1){ %>
+                            <!-- <a href="/completeRide" class="finish-button track-button">Finish Ride</a> -->
+                             <form action="/completeRide" method="post">
+                                <input type="hidden" name="id" value="<%= ongoingRides[0].rideid %>">
+                                <button type="submit" class="finish-button track-button">Complete Ride</button>
+                             </form>
+                        <% } %>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>No ongoing rides at the moment.</p>
+            <% } %>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <%- include('components/footer.ejs') %>
+
+</body>
+</html>

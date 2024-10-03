@@ -1,82 +1,120 @@
-/* General styles for body */
+/* Thank You Page Styles */
 body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-/* Navbar styles */
-.navbar {
-    background-color: #4CAF50;
-    padding: 1rem;
-    text-align: center;
-}
-
-.navbar a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.2rem;
-    margin: 0 15px;
-}
-
-/* Main container for the Thank You page */
-.thank-you-page {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 50px;
-    text-align: center;
-    background-color: #fff;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 50px auto;
-    max-width: 600px;
-    border-radius: 12px;
-}
-
-/* Heading styles */
-.thank-you-page h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: #4CAF50;
-    letter-spacing: 2px;
-}
-
-/* Paragraph styles */
-.thank-you-page p {
-    font-size: 1.2rem;
-    color: #555;
-    margin-bottom: 2rem;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
     line-height: 1.6;
+    margin: 0;
+    padding: 0;
 }
 
-/* Link styles */
-.thank-you-page a {
-    display: inline-block;
-    background-color: #4CAF50;
-    color: white;
-    padding: 12px 24px;
-    text-decoration: none;
-    border-radius: 6px;
-    font-size: 1.1rem;
-    transition: background-color 0.3s ease;
-}
-
-.thank-you-page a:hover {
-    background-color: #45a049;
-}
-
-/* Footer at the bottom */
-footer {
-    background-color: #333;
-    color: white;
+.thank-you-page {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 40px 20px;
     text-align: center;
-    padding: 15px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: relative;
-    bottom: 0;
-    width: 100%;
+    overflow: hidden;
+}
+
+/* Decorative elements */
+.thank-you-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(to right, #6c63ff, #ff6464);
+}
+
+h1 {
+    color: #6c63ff;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+/* Optional decorative underline for h1 */
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 3px;
+    background-color: #ff6464;
+    border-radius: 2px;
+}
+
+p {
+    font-size: 1.2em;
+    color: #666;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+a {
+    display: inline-block;
+    background-color: #6c63ff;
+    color: white;
+    text-decoration: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(108, 99, 255, 0.2);
+}
+
+a:hover {
+    background-color: #5b52ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(108, 99, 255, 0.3);
+}
+
+/* Optional animation for the content */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.thank-you-page h1,
+.thank-you-page p,
+.thank-you-page a {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.thank-you-page p {
+    animation-delay: 0.2s;
+}
+
+.thank-you-page a {
+    animation-delay: 0.4s;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+    .thank-you-page {
+        margin: 40px 20px;
+        padding: 30px 15px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    p {
+        font-size: 1.1em;
+    }
 }

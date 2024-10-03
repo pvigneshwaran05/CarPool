@@ -15,12 +15,43 @@
             <h1>Create a New Ride</h1>
             <p>Fill out the details below to create your ride.</p>
         </header>
-
+        
         <section class="create-ride-form-section">
             <form class="create-ride-form" action="/submitRide" method="POST">
                 <div class="form-row">
                     <label for="destination">Final Destination:</label>
-                    <input type="text" id="destination" name="destination" required>
+                    <!-- <input type="text" id="destination" name="destination" required> -->
+                    <select id="destination" name="destination" required>
+                        <option value="">Select a city or town</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Coimbatore">Coimbatore</option>
+                        <option value="Madurai">Madurai</option>
+                        <option value="Tiruchirappalli">Tiruchirappalli</option>
+                        <option value="Salem">Salem</option>
+                        <option value="Tirunelveli">Tirunelveli</option>
+                        <option value="Tiruppur">Tiruppur</option>
+                        <option value="Erode">Erode</option>
+                        <option value="Vellore">Vellore</option>
+                        <option value="Thoothukudi">Thoothukudi</option>
+                        <option value="Dindigul">Dindigul</option>
+                        <option value="Thanjavur">Thanjavur</option>
+                        <option value="Karur">Karur</option>
+                        <option value="Nagercoil">Nagercoil</option>
+                        <option value="Kanchipuram">Kanchipuram</option>
+                        <option value="Cuddalore">Cuddalore</option>
+                        <option value="Sivakasi">Sivakasi</option>
+                        <option value="Hosur">Hosur</option>
+                        <option value="Pudukkottai">Pudukkottai</option>
+                        <option value="Nagapattinam">Nagapattinam</option>
+                        <option value="Kumarapalayam">Kumarapalayam</option>
+                        <option value="Rajapalayam">Rajapalayam</option>
+                        <option value="Gudiyatham">Gudiyatham</option>
+                        <option value="Ambur">Ambur</option>
+                        <option value="Namakkal">Namakkal</option>
+                        <option value="Kovilpatti">Kovilpatti</option>
+                        <option value="Udhagamandalam">Udhagamandalam</option>
+                        <!-- Add more cities/towns as needed -->
+                    </select>
                 </div>
                 <div class="form-row">
                     <label for="startTime">Travel Start Time:</label>
