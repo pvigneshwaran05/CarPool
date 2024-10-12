@@ -19,11 +19,12 @@ const port = 3000;
 
 dotenv.config();
 
+console.log("Application Satrted");
+
 const db = new pg.Client({
     user : "postgres",
     host : "localhost",
     database : "CarPool",
-    // password : "vignesh@05",
     password : "123456",
     port : 5432,
 });
