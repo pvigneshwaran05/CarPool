@@ -24,7 +24,7 @@ const db = new pg.Client({
     host : "localhost",
     database : "CarPool",
     // password : "vignesh@05",
-    password : process.env.DATABASE_PASS,
+    password : "123456",
     port : 5432,
 });
   
