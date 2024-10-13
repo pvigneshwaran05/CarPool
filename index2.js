@@ -1,13 +1,16 @@
 import express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
-import pg from "pg";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import { createClient } from '@supabase/supabase-js';
+
+// Load environment variables
+dotenv.config();
 
 // Create transporter for Nodemailer
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // or use your email service provider
+  service: 'gmail',
   auth: {
     user: 'tripcompannionx@gmail.com',
     pass: 'bruk ucac swjd pbiw',
@@ -17,19 +20,12 @@ const transporter = nodemailer.createTransport({
 const app = express();
 const port = 3000;
 
-dotenv.config();
+console.log("Application Started");
 
-console.log("Application Satrted");
-
-const db = new pg.Client({
-    user : "postgres",
-    host : "localhost",
-    database : "CarPool",
-    password : "123456",
-    port : 5432,
-});
-  
-db.connect();
+// Initialize Supabase client
+const supabaseUrl = "https://uygoygzrsupdgklbqpbg.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5Z295Z3pyc3VwZGdrbGJxcGJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg3OTY4NjUsImV4cCI6MjA0NDM3Mjg2NX0.1PlN3rzm0h1ZMw74zb82nsgyoh9rgyNPzN7wpMmA3fs";
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));
@@ -40,471 +36,579 @@ var data;
 var rollNo;
 var name;
 
-app.get("/",async(req,res)=>{
+app.get("/", async (req, res) => {
     res.render("home.ejs");
-    // res.render("rideSubmit.ejs");
 });
 
-app.get("/logout",async(req,res)=>{
+app.get("/logout", async (req, res) => {
     currentUser = null;
     res.redirect("/");
-})
+});
 
-app.get("/signUp",async(req,res)=>{
+app.get("/signUp", async (req, res) => {
     res.render("signUp.ejs");
 });
 
-app.post("/signupdetails",async(req,res)=>{
-    db.query("insert into profile(rollno, name, gender, carname, course, studyyear, phone, pass) values($1,$2,$3,$4,$5,$6,$7,$8)",
-        [req.body.rollNo, req.body.name, req.body.gender, req.body.carName, req.body.course, req.body.year, req.body.phoneNumber, req.body.password]);
-    // console.log(req.body.rollNo);
-    // console.log(typeof(req.body.rollNo));
+app.post("/signupdetails", async (req, res) => {
+    const { data, error } = await supabase
+        .from('profile')
+        .insert([
+            {
+                rollno: req.body.rollNo,
+                name: req.body.name,
+                gender: req.body.gender,
+                carname: req.body.carName,
+                course: req.body.course,
+                studyyear: req.body.year,
+                phone: req.body.phoneNumber,
+                pass: req.body.password
+            }
+        ]);
 
-    data = await db.query("Select * from profile where rollno = $1",[req.body.rollNo]);
-    console.log(data.rows);
-    currentUser = data.rows[0];
+    if (error) {
+        console.error('Error inserting data:', error);
+        return res.status(500).send("Error creating profile");
+    }
 
+    const { data: userData, error: userError } = await supabase
+        .from('profile')
+        .select('*')
+        .eq('rollno', req.body.rollNo)
+        .single();
+
+    if (userError) {
+        console.error('Error fetching user data:', userError);
+        return res.status(500).send("Error fetching user data");
+    }
+
+    currentUser = userData;
     rollNo = req.body.rollNo;
     name = req.body.name;
     res.redirect("/home");
 });
 
-app.get("/login",async(req,res)=>{
+app.get("/login", async (req, res) => {
     res.render("login.ejs");
 });
 
-app.post("/logindetails",async(req,res)=>{
+app.post("/logindetails", async (req, res) => {
     rollNo = req.body.rollNo;
-    data = await db.query("Select * from profile where rollNo = $1",[rollNo]);
-    currentUser = data.rows[0];
-    // console.log(pass.rows[0]);
-    if(req.body.password == currentUser.pass)
-    {
-        // console.log(currentUser);
-        res.render("home.ejs",{user : currentUser});
-        name = currentUser.name;
-        // res.render("home.ejs",{name : homeName})
+    const { data: userData, error } = await supabase
+        .from('profile')
+        .select('*')
+        .eq('rollno', rollNo)
+        .single();
+
+    if (error) {
+        console.error('Error fetching user data:', error);
+        return res.status(500).send("Error fetching user data");
     }
-    else
-    {
+
+    currentUser = userData;
+
+    if (req.body.password == currentUser.pass) {
+        res.render("home.ejs", { user: currentUser });
+        name = currentUser.name;
+    } else {
         res.render("login.ejs");
     }
-})
-
-const user = {
-    rollNo: "infifnity",
-    name: "HIM",
-    gender: "Not Known",
-    carName: "Honda Civic",
-    course: "all",
-    year: 1000,
-    phoneNumber: "123-456-7890"
-};
-
-// const rides = [
-//     {
-//         id: 1,
-//         driverName: "John Doe",
-//         destination: "City Center",
-//         startTime: "2024-09-25T15:00:00"
-//     },
-//     {
-//         id: 2,
-//         driverName: "Jane Smith",
-//         destination: "Town Square",
-//         startTime: "2024-09-25T18:00:00"
-//     }
-// ];
-
-const ride = {
-    id: 'ride123',
-    driver: {
-        rollNo: '12345',
-        name: 'John Doe'
-    },
-    destination: 'New York',
-    startTime: '2024-09-18 10:00 AM',
-    estimatedTravelTime: '4 hours',
-    carName: 'Toyota Prius',
-    seatsAvailable: 3,
-    seatPositions: ['Front Left', 'Rear Left', 'Rear Right'],
-    costPerSeat: 20
-};
-
-app.get("/home",async(req,res)=>{
-    res.render("home.ejs", {user : currentUser});
 });
 
-app.get("/profile",async(req,res)=>{
-    res.render("profile.ejs", {user : currentUser});
+app.get("/home", async (req, res) => {
+    res.render("home.ejs", { user: currentUser });
 });
 
-var result1;
-var result2;
-var result3;
-
-app.get("/viewHistory/:r",async(req,res)=>{
-  var rollNo = req.params.r;
-  data = await db.query("select * from ridelist where rollno = $1 and status = 1",[rollNo]);
-  result1 = data.rows;
-  // console.log(result1);
-
-  data = await db.query("select * from ridehistory where rollc = $1",[rollNo]);
-  result2 = data.rows;
-  // console.log(result2);
-
-
-  data = await db.query("select * from ridehistory where rollr = $1",[rollNo]);
-  result3 = data.rows;
-  // console.log(result3);
-
-
-  res.render("rideHistory1.ejs",{ride : result1, ridelist: result2, bookedRides : result3});
+app.get("/profile", async (req, res) => {
+    res.render("profile.ejs", { user: currentUser });
 });
 
-app.get("/editProfile",async(req,res)=>{
-    res.render("editProfile.ejs", {user : currentUser});
+app.get("/viewHistory/:r", async (req, res) => {
+    var rollNo = req.params.r;
+    
+    const { data: result1, error: error1 } = await supabase
+        .from('ridelist')
+        .select('*')
+        .eq('rollno', rollNo)
+        .eq('status', 1);
+
+    const { data: result2, error: error2 } = await supabase
+        .from('ridehistory')
+        .select('*')
+        .eq('rollc', rollNo);
+
+    const { data: result3, error: error3 } = await supabase
+        .from('ridehistory')
+        .select('*')
+        .eq('rollr', rollNo);
+
+    if (error1 || error2 || error3) {
+        console.error('Error fetching ride history:', error1 || error2 || error3);
+        return res.status(500).send("Error fetching ride history");
+    }
+
+    res.render("rideHistory1.ejs", { ride: result1, ridelist: result2, bookedRides: result3 });
 });
 
-app.post("/updateProfile",async(req,res)=>{
-    await db.query("Update profile set rollno = $1, name = $2, gender = $3, carname = $4, course = $5, studyyear = $6, phone = $7 where id = $8",
-        [
-            req.body.rollNo,
-            req.body.name,
-            req.body.gender,
-            req.body.carName,
-            req.body.course,
-            req.body.year,
-            req.body.phoneNumber,
-            req.body.id
-        ]
-    )
-    data = await db.query("Select * from profile where id = $1",[req.body.id]);
-    currentUser = data.rows[0];
+app.get("/editProfile", async (req, res) => {
+    res.render("editProfile.ejs", { user: currentUser });
+});
+
+app.post("/updateProfile", async (req, res) => {
+    const { data, error } = await supabase
+        .from('profile')
+        .update({
+            rollno: req.body.rollNo,
+            name: req.body.name,
+            gender: req.body.gender,
+            carname: req.body.carName,
+            course: req.body.course,
+            studyyear: req.body.year,
+            phone: req.body.phoneNumber
+        })
+        .eq('id', req.body.id);
+
+    if (error) {
+        console.error('Error updating profile:', error);
+        return res.status(500).send("Error updating profile");
+    }
+
+    const { data: updatedUser, error: fetchError } = await supabase
+        .from('profile')
+        .select('*')
+        .eq('id', req.body.id)
+        .single();
+
+    if (fetchError) {
+        console.error('Error fetching updated user data:', fetchError);
+        return res.status(500).send("Error fetching updated user data");
+    }
+
+    currentUser = updatedUser;
     res.redirect("/profile");
 });
 
-app.get("/createRide",async(req,res)=>{
+app.get("/createRide", async (req, res) => {
     res.render("createRide.ejs");
 });
 
-app.post("/submitRide",async(req,res)=>{
-    await db.query("insert into ridelist(destination,starttime,duration,carname,seatnum,pos,seatcost,rollno,name) values($1,$2,$3,$4,$5,$6,$7,$8,$9)",
-        [req.body.destination,req.body.startTime,req.body.estimatedTime,req.body.carName,req.body.seatsAvailable,req.body.seatPositions,req.body.seatCost,rollNo,currentUser.name]);
+app.post("/submitRide", async (req, res) => {
+    const { data, error } = await supabase
+        .from('ridelist')
+        .insert([{
+            destination: req.body.destination,
+            starttime: req.body.startTime,
+            duration: req.body.estimatedTime,
+            carname: req.body.carName,
+            seatnum: req.body.seatsAvailable,
+            pos: req.body.seatPositions,
+            seatcost: req.body.seatCost,
+            rollno: rollNo,
+            name: currentUser.name
+        }]);
+
+    if (error) {
+        console.error('Error submitting ride:', error);
+        return res.status(500).send("Error submitting ride");
+    }
+
     res.render("rideSubmit.ejs");
 });
 
+app.get("/viewStatus", async (req, res) => {
+    const { data: allRides, error: allRidesError } = await supabase
+        .from('ridelist')
+        .select('*')
+        .eq('rollno', currentUser.rollno)
+        .eq('status', 0);
 
-var cRides;
-var bRides;
-var allRides;
+    const { data: cRides, error: cRidesError } = await supabase
+        .from('ride')
+        .select('*')
+        .eq('rollc', currentUser.rollno);
 
-// app.get("/viewStatus",async(req,res)=>{
-//     data  = await db.query("Select * from ride where rollc = $1",[currentUser.rollno]);
-//     cRides = data.rows;
-//     console.log(cRides);
-//     data = await db.query("Select * from ride where rollr = $1",[currentUser.rollno]);
-//     bRides = data.rows;
+    const { data: bRides, error: bRidesError } = await supabase
+        .from('ride')
+        .select('*')
+        .eq('rollr', currentUser.rollno);
 
-//     data = await db.query("Select * from ridelist where rideid in (1,15)");
-//     var check = data.rows;
-//     console.log(check);
+    if (allRidesError || cRidesError || bRidesError) {
+        console.error('Error fetching rides:', allRidesError || cRidesError || bRidesError);
+        return res.status(500).send("Error fetching rides");
+    }
 
-//     res.render("rideStatus.ejs",{createdRides : cRides,bookedRides : bRides});
-// });
-
-app.get("/viewStatus",async(req,res)=>{
-    data = await db.query("Select * from ridelist where rollno = $1 and status = 0",[currentUser.rollno]);
-    allRides = data.rows;
-
-    data  = await db.query("Select * from ride where rollc = $1",[currentUser.rollno]);
-    cRides = data.rows;
-    // console.log(cRides);
-    data = await db.query("Select * from ride where rollr = $1",[currentUser.rollno]);
-    bRides = data.rows;
-
-    res.render("rideStatus.ejs",{ride : allRides, ridelist : cRides, bookedRides : bRides});
+    res.render("rideStatus.ejs", { ride: allRides, ridelist: cRides, bookedRides: bRides });
 });
 
+app.get("/rideHistory", async (req, res) => {
+    const { data: allRides, error: allRidesError } = await supabase
+        .from('ridelist')
+        .select('*')
+        .eq('rollno', currentUser.rollno)
+        .eq('status', 1);
 
-app.get("/rideHistory",async(req,res)=>{
-  data = await db.query("Select * from ridelist where rollno = $1 and status = 1",[currentUser.rollno]);
-  allRides = data.rows;
+    const { data: cRides, error: cRidesError } = await supabase
+        .from('ridehistory')
+        .select('*')
+        .eq('rollc', currentUser.rollno);
 
-  data  = await db.query("Select * from ridehistory where rollc = $1",[currentUser.rollno]);
-  cRides = data.rows;
-  // console.log(cRides);
-  data = await db.query("Select * from ridehistory where rollr = $1",[currentUser.rollno]);
-  bRides = data.rows;
+    const { data: bRides, error: bRidesError } = await supabase
+        .from('ridehistory')
+        .select('*')
+        .eq('rollr', currentUser.rollno);
 
-  res.render("rideStatus.ejs",{ride : allRides, ridelist : cRides, bookedRides : bRides});
+    if (allRidesError || cRidesError || bRidesError) {
+        console.error('Error fetching ride history:', allRidesError || cRidesError || bRidesError);
+        return res.status(500).send("Error fetching ride history");
+    }
+
+    res.render("rideStatus.ejs", { ride: allRides, ridelist: cRides, bookedRides: bRides });
 });
-
 
 app.get("/updateRideRequest", async (req, res) => {
     const rideId = parseInt(req.query.rideId);
     const rollNo = req.query.rollNo;
-    const action = req.query.action; // "accept" or "reject"
+    const action = req.query.action;
     let bit;
     let actionText;
-  
+
     if (isNaN(rideId)) {
-      return res.status(400).send("Invalid ride ID");
-    }
-  
-    if (action === "accept") {
-      bit = 1;
-      actionText = "accepted";
-    } else if (action === "reject") {
-      bit = -1;
-      actionText = "rejected";
-    } else {
-      return res.status(400).send("Invalid action");
-    }
-  
-    // Update the database with the action taken
-    await db.query("UPDATE ride SET confirmed = $1 WHERE thisrideid = $2", [
-      bit,
-      rideId,
-    ]);
-  
-    // Retrieve the user's email who made the request
-    const requesterEmail = rollNo + "@psgtech.ac.in";
-  
-    if (requesterEmail) {
-      // Prepare email options
-      const mailOptions = {
-        from: 'tripcompannionx@gmail.com',
-        to: requesterEmail,
-        subject: `Ride Request ${actionText}`,
-        text: `Your ride request for Ride ID ${rideId} has been ${actionText}.`,
-      };
-  
-      // Send notification email to the requester
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log("Failed to send email to requester...", error);
-        } else {
-          console.log("Email sent to requester successfully!", info.response);
-        }
-      });
-    }
-  
-    // Render response based on the action
-    if (bit === 1) {
-      res.render("thankyou.ejs");
-    } else {
-      res.render("better.ejs");
-    }
-  });
-
-var request;
-var result1;
-var result2;
-
-app.get("/notify",async(req,res)=>{
-    data = await db.query("Select * from ride where rollc = $1 and confirmed = 0",[currentUser.rollno]);
-    request = data.rows;
-
-    data = await db.query("select * from ride where rollr = $1 and confirmed not in (0)",[currentUser.rollno]);
-    result1 = data.rows;
-
-    data = await db.query("select * from ridehistory where rollr = $1 and fbit = 0",[currentUser.rollno]);
-    result2 = data.rows;
-
-    res.render("notification.ejs",{newRequests : request, requestStatus : result1, feedbackPending : result2});
-});
-
-app.post("/submitFeedback",async(req,res)=>{
-  var id = parseInt(req.body.id);
-  // console.log(id);
-  data = await db.query("select * from ridehistory where thisrideid = $1",[id]);
-  var ride = data.rows[0];
-
-  res.render("feedback.ejs",{ride : ride});
-
-});
-
-
-app.post("/getFeedback",async(req,res)=>{
-  var id = parseInt(req.body.id);
-  var rating = parseInt(req.body.rating);
-  var desc = req.body.comments;
-  var comfort = req.body.comfort;
-  // console.log(id, rating, desc);
-  await db.query("UPDATE ridehistory SET feedback = $1, rating = $2, comfort = $3, fbit = 1 WHERE thisrideid = $4",[desc, rating, comfort, id]);
-  // await db.query("Update ridehistory set fbit = 1 where thisrideid = $1",[id]);
-
-  res.render("feedThank.ejs");
-});
-
-app.get("/searchRide",async(req,res)=>{
-
-  var currentTime = new Date();
-
-  data = await db.query("Select * from ridelist where seatnum > 0 and rollno not in ($1) and status = 0",[currentUser.rollno]);
-  rides = data.rows;
-
-  res.render("searchRide.ejs", {rides : rides});
-});
-
-var thisRide;
-
-app.get("/rideInfo/:rideId",async(req,res)=>{
-    var rideId = req.params.rideId;
-    var rideIdInt = Number(rideId);
-    // console.log(typeof(rideIdInt));
-
-    if (isNaN(rideIdInt)) {
-        // Return an error response if rideId is not a valid number
         return res.status(400).send("Invalid ride ID");
     }
-    data = await db.query("Select * from ridelist where rideid = $1",[rideIdInt]);
-    thisRide = data.rows[0];
-    // console.log(ride);
 
-    res.render("rideInfo.ejs", {ride : thisRide});
+    if (action === "accept") {
+        bit = 1;
+        actionText = "accepted";
+    } else if (action === "reject") {
+        bit = -1;
+        actionText = "rejected";
+    } else {
+        return res.status(400).send("Invalid action");
+    }
+
+    const { data, error } = await supabase
+        .from('ride')
+        .update({ confirmed: bit })
+        .eq('thisrideid', rideId);
+
+    if (error) {
+        console.error('Error updating ride request:', error);
+        return res.status(500).send("Error updating ride request");
+    }
+
+    const requesterEmail = rollNo + "@psgtech.ac.in";
+
+    if (requesterEmail) {
+        const mailOptions = {
+            from: 'tripcompannionx@gmail.com',
+            to: requesterEmail,
+            subject: `Ride Request ${actionText}`,
+            text: `Your ride request for Ride ID ${rideId} has been ${actionText}.`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log("Failed to send email to requester...", error);
+            } else {
+                console.log("Email sent to requester successfully!", info.response);
+            }
+        });
+    }
+
+    if (bit === 1) {
+        res.render("thankyou.ejs");
+    } else {
+        res.render("better.ejs");
+    }
+});
+
+app.get("/notify", async (req, res) => {
+    const { data: request, error: requestError } = await supabase
+        .from('ride')
+        .select('*')
+        .eq('rollc', currentUser.rollno)
+        .eq('confirmed', 0);
+
+    const { data: result1, error: result1Error } = await supabase
+        .from('ride')
+        .select('*')
+        .eq('rollr', currentUser.rollno)
+        .neq('confirmed', 0);
+
+    const { data: result2, error: result2Error } = await supabase
+        .from('ridehistory')
+        .select('*')
+        .eq('rollr', currentUser.rollno)
+        .eq('fbit', 0);
+
+    if (requestError || result1Error || result2Error) {
+        console.error('Error fetching notifications:', requestError || result1Error || result2Error);
+        return res.status(500).send("Error fetching notifications");
+    }
+
+    res.render("notification.ejs", { newRequests: request, requestStatus: result1, feedbackPending: result2 });
+});
+
+app.post("/submitFeedback", async (req, res) => {
+    var id = parseInt(req.body.id);
+    
+    const { data, error } = await supabase
+        .from('ridehistory')
+        .select('*')
+        .eq('thisrideid', id)
+        .single();
+
+    if (error) {
+        console.error('Error fetching ride for feedback:', error);
+        return res.status(500).send("Error fetching ride for feedback");
+    }
+
+    res.render("feedback.ejs", { ride: data });
+});
+
+app.post("/getFeedback", async (req, res) => {
+    var id = parseInt(req.body.id);
+    var rating = parseInt(req.body.rating);
+    var desc = req.body.comments;
+    var comfort = req.body.comfort;
+
+    const { data, error } = await supabase
+        .from('ridehistory')
+        .update({ feedback: desc, rating: rating, comfort: comfort, fbit: 1 })
+        .eq('thisrideid', id);
+
+    if (error) {
+        console.error('Error updating feedback:', error);
+        return res.status(500).send("Error updating feedback");
+    }
+
+    res.render("feedThank.ejs");
+});
+
+app.get("/searchRide", async (req, res) => {
+    var currentTime = new Date();
+
+    const { data, error } = await supabase
+    .from('ridelist')
+    .select('*')
+    .eq('status', 0);
+
+
+    // if (error) {
+    //     console.error('Error searching rides:', error);
+    //     return res.status(500).send("Error searching rides");
+    // }
+
+    // console.log('Retrieved rides:', data);
+
+    // if (data.length === 0) {
+    //     console.log('No rides found in the ridelist');
+    // }
+
+    res.render("searchRide.ejs", { rides: data });
+});
+app.get("/rideInfo/:rideId", async (req, res) => {
+    var rideId = req.params.rideId;
+    var rideIdInt = Number(rideId);
+
+    if (isNaN(rideIdInt)) {
+        return res.status(400).send("Invalid ride ID");
+    }
+
+    const { data, error } = await supabase
+        .from('ridelist')
+        .select('*')
+        .eq('rideid', rideIdInt)
+        .single();
+
+    if (error) {
+        console.error('Error fetching ride info:', error);
+        return res.status(500).send("Error fetching ride info");
+    }
+
+    res.render("rideInfo.ejs", { ride: data });
 });
 
 app.get("/bookRide", async (req, res) => {
     var rideId = parseInt(req.query.rideId);
     var seatNum = parseInt(req.query.seatNum);
-  
-    if (isNaN(seatNum)) {
-      return res.status(400).send("Invalid seat number");
+
+    if (isNaN(seatNum) || isNaN(rideId)) {
+        return res.status(400).send("Invalid seat number or ride ID");
     }
-    if (isNaN(rideId)) {
-      return res.status(400).send("Invalid ride ID");
-    }
-  
+
     seatNum--;
-  
-    // Update the ride status
-    await db.query(
-      "UPDATE ridelist SET status = $1, seatnum = $2 WHERE rideid = $3",
-      [0, seatNum, rideId]
-    );
-  
-    // Retrieve ride details
-    const data = await db.query("SELECT * FROM ridelist WHERE rideid = $1", [
-      rideId,
-    ]);
-    const thisRide = data.rows[0];
-  
-    // Insert booking record
-    await db.query(
-      "INSERT INTO ride(rideid, rollc, namec, rollr, namer, seatnum, seatpos, destination, starttime, carname, sents, decides, recvs, confirmed) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)",
-      [
-        thisRide.rideid,
-        thisRide.rollno,
-        thisRide.name,
-        currentUser.rollno,
-        currentUser.name,
-        1,
-        thisRide.pos,
-        thisRide.destination,
-        thisRide.starttime,
-        thisRide.carname,
-        1,
-        0,
-        0,
-        0,
-      ]
-    );
-  
-    // Retrieve the email of the ride creator
-    const creatorEmail = thisRide.rollno + "@psgtech.ac.in";
-  
-    if (creatorEmail) {
-      // Send email notification
-      const mailOptions = {
-        from: 'tripcompannionx@gmail.com',
-        to: creatorEmail,
-        subject: `Ride Booking Confirmation for Ride ID ${rideId}`,
-        text: `Hello, ${currentUser.name} has booked a seat on your ride.`,
-      };
-  
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log("Failed to send email...", error);
-        } else {
-          console.log("Email sent successfully!", info.response);
-        }
-      });
+
+    const { data: updateData, error: updateError } = await supabase
+        .from('ridelist')
+        .update({ status: 0, seatnum: seatNum })
+        .eq('rideid', rideId);
+
+    if (updateError) {
+        console.error('Error updating ride:', updateError);
+        return res.status(500).send("Error updating ride");
     }
-  
+
+    const { data: rideData, error: rideError } = await supabase
+        .from('ridelist')
+        .select('*')
+        .eq('rideid', rideId)
+        .single();
+
+    if (rideError) {
+        console.error('Error fetching ride data:', rideError);
+        return res.status(500).send("Error fetching ride data");
+    }
+
+    const { data: insertData, error: insertError } = await supabase
+        .from('ride')
+        .insert([{
+            rideid: rideData.rideid,
+            rollc: rideData.rollno,
+            namec: rideData.name,
+            rollr: currentUser.rollno,
+            namer: currentUser.name,
+            seatnum: 1,
+            seatpos: rideData.pos,
+            destination: rideData.destination,
+            starttime: rideData.starttime,
+            carname: rideData.carname,
+            sents: 1,
+            decides: 0,
+            recvs: 0,
+            confirmed: 0
+        }]);
+
+    if (insertError) {
+        console.error('Error inserting booking record:', insertError);
+        return res.status(500).send("Error inserting booking record");
+    }
+
+    const creatorEmail = rideData.rollno + "@psgtech.ac.in";
+
+    if (creatorEmail) {
+        const mailOptions = {
+            from: 'tripcompannionx@gmail.com',
+            to: creatorEmail,
+            subject: `Ride Booking Confirmation for Ride ID ${rideId}`,
+            text: `Hello, ${currentUser.name} has booked a seat on your ride.`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log("Failed to send email...", error);
+            } else {
+                console.log("Email sent successfully!", info.response);
+            }
+        });
+    }
+
     res.render("booked.ejs");
-  });
-  
+});
 
-app.get("/viewProfile",async(req,res)=>{
+app.get("/viewProfile", async (req, res) => {
     var tempRollNo = req.query.rollno;
-    // console.log(tempRollNo);
 
-    data = await db.query("Select * from profile where rollno = $1",[tempRollNo]);
-    var tempUser = data.rows[0];
-    // console.log(tempUser);
-    res.render("otherProfile.ejs",{user : tempUser});
+    const { data: tempUser, error } = await supabase
+        .from('profile')
+        .select('*')
+        .eq('rollno', tempRollNo)
+        .single();
+
+    if (error) {
+        console.error('Error fetching user profile:', error);
+        return res.status(500).send("Error fetching user profile");
+    }
+
+    res.render("otherProfile.ejs", { user: tempUser });
 });
 
-app.get("/currentRides", async(req,res) => {
-  // Format current time to match your database format
-  const currentTime = new Date().toISOString().slice(0, 16);
-  
-  // console.log("Current Time formatted:", currentTime); 
-  
-  data = await db.query(
-      "SELECT * FROM ride WHERE starttime > $1 AND (rollr = $2 OR rollc = $3)",
-      [currentTime, currentUser.rollno, currentUser.rollno]
-  );
-  
-  var ongoing = data.rows;
-  var bit = 0;
-  if(ongoing.length != 0 && ongoing[0].rollc == currentUser.rollno) {
-      bit = 1;
-  }
+app.get("/currentRides", async (req, res) => {
+    const currentTime = new Date().toISOString().slice(0, 16);
 
-  var display = [ongoing[0]]
-  res.render("ongoing.ejs", {ongoingRides: display, bit: bit});
+    const { data: ongoing, error } = await supabase
+        .from('ride')
+        .select('*')
+        .gt('starttime', currentTime)
+        .or(`rollr.eq.${currentUser.rollno},rollc.eq.${currentUser.rollno}`);
+
+    if (error) {
+        console.error('Error fetching current rides:', error);
+        return res.status(500).send("Error fetching current rides");
+    }
+
+    var bit = 0;
+    if (ongoing.length != 0 && ongoing[0].rollc == currentUser.rollno) {
+        bit = 1;
+    }
+
+    var display = [ongoing[0]];
+    res.render("ongoing.ejs", { ongoingRides: display, bit: bit });
 });
 
-app.post("/completeRide",async(req,res)=>{
-  var rideId = parseInt(req.body.id);
-  await db.query("update ridelist set status = 1 where rideid = $1",[rideId]);
-  data = await db.query("select * from ride where rideid = $1",[rideId]);
-  var rides = data.rows;
+app.post("/completeRide", async (req, res) => {
+    var rideId = parseInt(req.body.id);
 
-  rides.forEach(async ride =>{
-    await db.query("insert into ridehistory(rideid, rollc, namec, rollr, namer, seatnum, seatpos, destination, starttime, carname, thisrideid, fbit) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",
-      [
-        ride.rideid,
-        ride.rollc,
-        ride.namec,
-        ride.rollr,
-        ride.namer,
-        ride.seatnum,
-        ride.seatpos,
-        ride.destination,
-        ride.starttime,
-        ride.carname,
-        ride.thisrideid,
-        0
-      ]
-    )
+    const { data: updateData, error: updateError } = await supabase
+        .from('ridelist')
+        .update({ status: 1 })
+        .eq('rideid', rideId);
 
-    await db.query("delete from ride where thisrideid = $1",[ride.thisrideid]);
-  });
+    if (updateError) {
+        console.error('Error updating ride status:', updateError);
+        return res.status(500).send("Error updating ride status");
+    }
 
-  res.redirect("/home");
+    const { data: rides, error: ridesError } = await supabase
+        .from('ride')
+        .select('*')
+        .eq('rideid', rideId);
 
+    if (ridesError) {
+        console.error('Error fetching rides:', ridesError);
+        return res.status(500).send("Error fetching rides");
+    }
+
+    for (let ride of rides) {
+        const { data: insertData, error: insertError } = await supabase
+            .from('ridehistory')
+            .insert([{
+                rideid: ride.rideid,
+                rollc: ride.rollc,
+                namec: ride.namec,
+                rollr: ride.rollr,
+                namer: ride.namer,
+                seatnum: ride.seatnum,
+                seatpos: ride.seatpos,
+                destination: ride.destination,
+                starttime: ride.starttime,
+                carname: ride.carname,
+                thisrideid: ride.thisrideid,
+                fbit: 0
+            }]);
+
+        if (insertError) {
+            console.error('Error inserting ride history:', insertError);
+            return res.status(500).send("Error inserting ride history");
+        }
+
+        const { data: deleteData, error: deleteError } = await supabase
+            .from('ride')
+            .delete()
+            .eq('thisrideid', ride.thisrideid);
+
+        if (deleteError) {
+            console.error('Error deleting ride:', deleteError);
+            return res.status(500).send("Error deleting ride");
+        }
+    }
+
+    res.redirect("/home");
 });
 
-app.get("/current-location",async(req,res)=>{
-    // res.render("startRide.ejs",{location : "Shiridi"});
+app.get("/current-location", async (req, res) => {
     res.render("startRide.ejs");
-    
 });
 
-app.listen(port,()=>{
-    console.log("Currently running on port "+port);
+app.listen(port, () => {
+    console.log("Currently running on port " + port);
 });
