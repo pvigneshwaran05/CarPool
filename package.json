@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node index2.js",
     "dev": "nodemon index2.js",
+    "build": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
